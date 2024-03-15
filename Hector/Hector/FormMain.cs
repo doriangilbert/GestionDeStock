@@ -15,5 +15,10 @@ namespace Hector
         {
             InitializeComponent();
         }
+
+        private void FormMain_Load(object Sender, EventArgs Args)
+        {
+
+        }
     }
 }
