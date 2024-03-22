@@ -92,5 +92,43 @@ namespace Hector
         {
 
         }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if(e.Node.Text == "Tous les articles")
+            {
+                listView1.Columns.Add("RefArticle");
+                listView1.Columns.Add("Description");
+                listView1.Columns.Add("Familles");
+                listView1.Columns.Add("Sous-familles");
+                listView1.Columns.Add("Marques");
+                listView1.Columns.Add("Quantité");
+
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+                using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+                {
+                    Connexion.Open();
+
+                    string RequeteSelectArticles = "SELECT * FROM Articles";
+
+                    using (SQLiteCommand CommandeArticles = new SQLiteCommand(RequeteSelectArticles, Connexion))
+                    {
+                        SQLiteDataReader LecteurArticles = CommandeArticles.ExecuteReader();
+
+                        while (LecteurArticles.Read())
+                        {
+                            ListViewItem ItemListe = new ListViewItem(new string[] { LecteurArticles["RefArticle"].ToString(), LecteurArticles["Description"].ToString(), "", LecteurArticles["RefSousFamille"].ToString(), LecteurArticles["RefMarque"].ToString(), LecteurArticles["Quantite"].ToString() });
+                            listView1.Items.Add(ItemListe);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
+            }
+        }
     }
 }
