@@ -23,17 +23,54 @@ namespace Hector
             using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
             {
                 Connexion.Open();
-                using (SQLiteCommand Commande = Connexion.CreateCommand())
+
+                string RequeteSelectFamilles = "SELECT * FROM Familles";
+
+                using (SQLiteCommand CommandeFamilles = new SQLiteCommand(RequeteSelectFamilles, Connexion))
                 {
-                    Commande.CommandText = "SELECT * FROM Familles";
-                    Commande.CommandType = CommandType.Text;
-                    SQLiteDataReader Lecteur = Commande.ExecuteReader();
-                    while (Lecteur.Read())
+                    SQLiteDataReader LecteurFamilles = CommandeFamilles.ExecuteReader();
+
+                    int IndiceNoeudFamille = 0;
+
+                    while (LecteurFamilles.Read())
                     {
-                        Console.WriteLine(Lecteur["RefFamille"] + " " + Lecteur["Nom"]);
+                        treeView1.BeginUpdate();
+                        treeView1.Nodes[1].Nodes.Add(LecteurFamilles["Nom"].ToString());
+                        treeView1.EndUpdate();
+                        
+                        string RequeteSelectSousFamilles = "SELECT * FROM SousFamilles WHERE RefFamille = @RefFamille";
+
+                        using (SQLiteCommand CommandeSousFamilles = new SQLiteCommand(RequeteSelectSousFamilles, Connexion))
+                        {
+                            CommandeSousFamilles.Parameters.Add(new SQLiteParameter("@RefFamille", LecteurFamilles["RefFamille"].ToString()));
+
+                            SQLiteDataReader LecteurSousFamilles = CommandeSousFamilles.ExecuteReader();
+
+                            while (LecteurSousFamilles.Read())
+                            {
+                                treeView1.BeginUpdate();
+                                treeView1.Nodes[1].Nodes[IndiceNoeudFamille].Nodes.Add(LecteurSousFamilles["Nom"].ToString());
+                                treeView1.EndUpdate();
+                            }
+                        }
+
+                        IndiceNoeudFamille++;
                     }
                 }
 
+                string RequeteSelectMarques = "SELECT * FROM Marques";
+
+                using (SQLiteCommand CommandeMarques = new SQLiteCommand(RequeteSelectMarques, Connexion))
+                {
+                    SQLiteDataReader LecteurMarques = CommandeMarques.ExecuteReader();
+
+                    while (LecteurMarques.Read())
+                    {
+                        treeView1.BeginUpdate();
+                        treeView1.Nodes[2].Nodes.Add(LecteurMarques["Nom"].ToString());
+                        treeView1.EndUpdate();
+                    }
+                }
             }
         }
 
