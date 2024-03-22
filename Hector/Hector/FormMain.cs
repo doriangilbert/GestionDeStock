@@ -37,19 +37,21 @@ namespace Hector
             }
         }
 
-        private void importerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //MaFenetreModale fenetreModale = new MaFenetreModale();
-            //fenetreModale.ShowDialog();
 
-            //if (fenetreModale.ShowDialog() == DialogResult.OK)
-            //{
-            //    var resultat = fenetreModale.Result;
-            //    // Utilisez le résultat comme nécessaire
-            //}
+        private void ActualiserToolStripMenuItem_Click(object Sender, EventArgs Args)
+        {
+
         }
 
-        private void exporterToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void ImporterToolStripMenuItem_Click_1(object Sender, EventArgs Args)
+        {
+            FormImport FenetreImportation = new FormImport();
+            FenetreImportation.ShowDialog();
+        }
+
+
+        private void ExporterToolStripMenuItem_Click(object Sender, EventArgs Args)
         {
 
         }
