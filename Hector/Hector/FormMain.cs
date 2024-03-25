@@ -10,14 +10,25 @@ using System.Windows.Forms;
 
 namespace Hector
 {
+    /// <summary>
+    /// Classe de la fenêtre principale de l'application.
+    /// </summary>
     public partial class FormMain : Form
     {
+        /// <summary>
+        /// Pour lancer la fenêtre (constructeur par défaut)
+        /// </summary>
         public FormMain()
         {
             InitializeComponent();
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
+        /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
         private void FormMain_Load(object Sender, EventArgs Args)
         {
             using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
@@ -75,12 +86,22 @@ namespace Hector
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
+        /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
         private void ActualiserToolStripMenuItem_Click(object Sender, EventArgs Args)
         {
 
         }
 
 
+        /// <summary>
+        /// Permet d'ouvrir une fenêtre modale d'importation de fichiers et de données pour la base de données.
+        /// </summary>
+        /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
+        /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
         private void ImporterToolStripMenuItem_Click_1(object Sender, EventArgs Args)
         {
             FormImport FenetreImportation = new FormImport();
@@ -88,6 +109,11 @@ namespace Hector
         }
 
 
+        /// <summary>
+        /// Permet d'ouvrir une fenêtre modale d'exportation de des données de la base de données dans un fichier.
+        /// </summary>
+        /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
+        /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
         private void ExporterToolStripMenuItem_Click(object Sender, EventArgs Args)
         {
 
