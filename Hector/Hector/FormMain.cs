@@ -123,28 +123,221 @@ namespace Hector
         {
             if(e.Node.Text == "Tous les articles")
             {
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
+
                 listView1.Columns.Add("RefArticle");
                 listView1.Columns.Add("Description");
-                listView1.Columns.Add("Familles");
-                listView1.Columns.Add("Sous-familles");
-                listView1.Columns.Add("Marques");
+                listView1.Columns.Add("Famille");
+                listView1.Columns.Add("Sous-famille");
+                listView1.Columns.Add("Marque");
+                listView1.Columns.Add("Prix");
                 listView1.Columns.Add("Quantité");
 
                 listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+                foreach(ColumnHeader EnTeteColonne in listView1.Columns)
+                {
+                    EnTeteColonne.Width = listView1.Width / listView1.Columns.Count;
+                }
 
                 using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
                 {
                     Connexion.Open();
 
-                    string RequeteSelectArticles = "SELECT * FROM Articles";
+                    string Requete = "SELECT RefArticle, Description, Familles.Nom AS NomFamille, SousFamilles.Nom AS NomSousFamille, Marques.Nom AS NomMarque, PrixHT, Quantite FROM Articles, SousFamilles, Familles, Marques"
+                                                    + " WHERE Articles.RefSousFamille = SousFamilles.RefSousFamille"
+                                                    + " AND SousFamilles.RefFamille = Familles.RefFamille"
+                                                    + " AND Articles.RefMarque = Marques.RefMarque";
 
-                    using (SQLiteCommand CommandeArticles = new SQLiteCommand(RequeteSelectArticles, Connexion))
+                    using (SQLiteCommand Commande = new SQLiteCommand(Requete, Connexion))
                     {
-                        SQLiteDataReader LecteurArticles = CommandeArticles.ExecuteReader();
+                        SQLiteDataReader Lecteur = Commande.ExecuteReader();
 
-                        while (LecteurArticles.Read())
+                        while (Lecteur.Read())
                         {
-                            ListViewItem ItemListe = new ListViewItem(new string[] { LecteurArticles["RefArticle"].ToString(), LecteurArticles["Description"].ToString(), "", LecteurArticles["RefSousFamille"].ToString(), LecteurArticles["RefMarque"].ToString(), LecteurArticles["Quantite"].ToString() });
+                            ListViewItem ItemListe = new ListViewItem(new string[] { Lecteur["RefArticle"].ToString(), Lecteur["Description"].ToString(), Lecteur["NomFamille"].ToString(), Lecteur["NomSousFamille"].ToString(), Lecteur["NomMarque"].ToString(), Lecteur["PrixHT"].ToString(), Lecteur["Quantite"].ToString() });
+                            listView1.Items.Add(ItemListe);
+                        }
+                    }
+                }
+            }
+            else if (e.Node.Text == "Familles")
+            {
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
+
+                listView1.Columns.Add("Nom");
+
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+                foreach (ColumnHeader EnTeteColonne in listView1.Columns)
+                {
+                    EnTeteColonne.Width = listView1.Width / listView1.Columns.Count;
+                }
+
+                using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+                {
+                    Connexion.Open();
+
+                    string Requete = "SELECT Nom FROM Familles";
+
+                    using (SQLiteCommand Commande = new SQLiteCommand(Requete, Connexion))
+                    {
+                        SQLiteDataReader Lecteur = Commande.ExecuteReader();
+
+                        while (Lecteur.Read())
+                        {
+                            ListViewItem ItemListe = new ListViewItem(new string[] { Lecteur["Nom"].ToString() });
+                            listView1.Items.Add(ItemListe);
+                        }
+                    }
+                }
+            }
+            else if (e.Node.Text == "Marques")
+            {
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
+
+                listView1.Columns.Add("Nom");
+
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+                foreach (ColumnHeader EnTeteColonne in listView1.Columns)
+                {
+                    EnTeteColonne.Width = listView1.Width / listView1.Columns.Count;
+                }
+
+                using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+                {
+                    Connexion.Open();
+
+                    string Requete = "SELECT Nom FROM Marques";
+
+                    using (SQLiteCommand Commande = new SQLiteCommand(Requete, Connexion))
+                    {
+                        SQLiteDataReader Lecteur = Commande.ExecuteReader();
+
+                        while (Lecteur.Read())
+                        {
+                            ListViewItem ItemListe = new ListViewItem(new string[] { Lecteur["Nom"].ToString() });
+                            listView1.Items.Add(ItemListe);
+                        }
+                    }
+                }
+            }
+            else if (e.Node.Parent.Text == "Familles")
+            {
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
+
+                listView1.Columns.Add("Nom");
+
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+                foreach (ColumnHeader EnTeteColonne in listView1.Columns)
+                {
+                    EnTeteColonne.Width = listView1.Width / listView1.Columns.Count;
+                }
+
+                using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+                {
+                    Connexion.Open();
+
+                    string Requete = "SELECT Nom FROM SousFamilles WHERE RefFamille = (SELECT RefFamille FROM Familles WHERE Nom = '" + e.Node.Text + "')";
+
+                    using (SQLiteCommand Commande = new SQLiteCommand(Requete, Connexion))
+                    {
+                        SQLiteDataReader Lecteur = Commande.ExecuteReader();
+
+                        while (Lecteur.Read())
+                        {
+                            ListViewItem ItemListe = new ListViewItem(new string[] { Lecteur["Nom"].ToString() });
+                            listView1.Items.Add(ItemListe);
+                        }
+                    }
+                }
+            }
+            else if (e.Node.Parent.Parent != null && e.Node.Parent.Parent.Text == "Familles")
+            {
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
+
+                listView1.Columns.Add("RefArticle");
+                listView1.Columns.Add("Description");
+                listView1.Columns.Add("Famille");
+                listView1.Columns.Add("Sous-famille");
+                listView1.Columns.Add("Marque");
+                listView1.Columns.Add("Prix");
+                listView1.Columns.Add("Quantité");
+
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+                foreach (ColumnHeader EnTeteColonne in listView1.Columns)
+                {
+                    EnTeteColonne.Width = listView1.Width / listView1.Columns.Count;
+                }
+
+                using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+                {
+                    Connexion.Open();
+
+                    string Requete = "SELECT RefArticle, Description, Familles.Nom AS NomFamille, SousFamilles.Nom AS NomSousFamille, Marques.Nom AS NomMarque, PrixHT, Quantite FROM Articles, SousFamilles, Familles, Marques"
+                                                    + " WHERE Articles.RefSousFamille = SousFamilles.RefSousFamille"
+                                                    + " AND SousFamilles.RefFamille = Familles.RefFamille"
+                                                    + " AND Articles.RefMarque = Marques.RefMarque"
+                                                    + " AND SousFamilles.RefFamille = (SELECT RefFamille FROM Familles WHERE Nom = '" + e.Node.Parent.Text + "')"
+                                                    + " AND Articles.RefSousFamille = (SELECT RefSousFamille FROM SousFamilles WHERE Nom = '" + e.Node.Text + "')";
+
+                    using (SQLiteCommand Commande = new SQLiteCommand(Requete, Connexion))
+                    {
+                        SQLiteDataReader Lecteur = Commande.ExecuteReader();
+
+                        while (Lecteur.Read())
+                        {
+                            ListViewItem ItemListe = new ListViewItem(new string[] { Lecteur["RefArticle"].ToString(), Lecteur["Description"].ToString(), Lecteur["NomFamille"].ToString(), Lecteur["NomSousFamille"].ToString(), Lecteur["NomMarque"].ToString(), Lecteur["PrixHT"].ToString(), Lecteur["Quantite"].ToString() });
+                            listView1.Items.Add(ItemListe);
+                        }
+                    }
+                }
+            }
+            else if (e.Node.Parent.Text == "Marques")
+            {
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
+
+                listView1.Columns.Add("RefArticle");
+                listView1.Columns.Add("Description");
+                listView1.Columns.Add("Famille");
+                listView1.Columns.Add("Sous-famille");
+                listView1.Columns.Add("Marque");
+                listView1.Columns.Add("Prix");
+                listView1.Columns.Add("Quantité");
+
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+                foreach (ColumnHeader EnTeteColonne in listView1.Columns)
+                {
+                    EnTeteColonne.Width = listView1.Width / listView1.Columns.Count;
+                }
+
+                using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+                {
+                    Connexion.Open();
+
+                    string Requete = "SELECT RefArticle, Description, Familles.Nom AS NomFamille, SousFamilles.Nom AS NomSousFamille, Marques.Nom AS NomMarque, PrixHT, Quantite FROM Articles, SousFamilles, Familles, Marques"
+                                                    + " WHERE Articles.RefSousFamille = SousFamilles.RefSousFamille"
+                                                    + " AND SousFamilles.RefFamille = Familles.RefFamille"
+                                                    + " AND Articles.RefMarque = Marques.RefMarque"
+                                                    + " AND Articles.RefMarque = (SELECT RefMarque FROM Marques WHERE Nom = '" + e.Node.Text + "')";
+
+                    using (SQLiteCommand Commande = new SQLiteCommand(Requete, Connexion))
+                    {
+                        SQLiteDataReader Lecteur = Commande.ExecuteReader();
+
+                        while (Lecteur.Read())
+                        {
+                            ListViewItem ItemListe = new ListViewItem(new string[] { Lecteur["RefArticle"].ToString(), Lecteur["Description"].ToString(), Lecteur["NomFamille"].ToString(), Lecteur["NomSousFamille"].ToString(), Lecteur["NomMarque"].ToString(), Lecteur["PrixHT"].ToString(), Lecteur["Quantite"].ToString() });
                             listView1.Items.Add(ItemListe);
                         }
                     }
