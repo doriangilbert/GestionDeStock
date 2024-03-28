@@ -83,7 +83,10 @@ namespace Hector
                 {
                     // On s'occupe de connaitre le nombre de tables de la BDD
                     int NombreColonnes = 0;
-                    
+
+                    // On crée le tableau accueillant tous les éléments du fichier
+                    List<string[]> Tableau = new List<string[]>();
+
                     if (!Sr.EndOfStream)
                     {
                         string Ligne1 = Sr.ReadLine();
@@ -104,8 +107,11 @@ namespace Hector
                         // On garde le nombre de colonnes du tableau de côté
                         // (pour éviter les erreurs type "pas assez de données" ou "trop de données dans cette ligne")
                         NombreColonnes = Mots1.Length;
+
+                        Tableau.Add(Mots1);
                     }
 
+                    // On parcourt toutes les lignes du fichier
                     while (!Sr.EndOfStream)
                     {
                         string Ligne = Sr.ReadLine();
@@ -121,14 +127,15 @@ namespace Hector
                             Ligne = Ligne.Replace(" ;", ";");
                         }
 
-                        // On sépare les colonnes via un tableau en omettant les espaces/cases vides.
+                        // On sépare les colonnes via un tableau en omettant les espaces / cases vides.
                         char[] Separateur = { ';' };
                         string[] Mots = Ligne.Split(Separateur, StringSplitOptions.RemoveEmptyEntries);
 
                         // On regarde si il y a bien le bon nombre d'informations / de colonnes.
+
                         if (Mots.Length == NombreColonnes)
                         {
-
+                            Tableau.Add(Mots);
                         }
 
                         else
@@ -137,10 +144,27 @@ namespace Hector
                         }
                     }
 
+                    string phrase = "";
+                    for (int i = 0; i < NombreLignes - NombreErreurs; i++)
+                    {
+                        phrase = "";
+                        for (int j = 0; j < NombreColonnes; j++)
+                        {
+                            phrase += Tableau[i][j];
+                        }
+                        Console.WriteLine(phrase);
+                    }
+
                     Sr.Close();
                     Sr.Dispose();
 
                 }
+
+                List<string> Marques;
+                List<string> Familles;
+                List<string> Sous_Familles;
+
+
             }
         }
 
