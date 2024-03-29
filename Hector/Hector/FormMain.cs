@@ -83,6 +83,25 @@ namespace Hector
                     }
                 }
             }
+
+            ToolStripStatusLabel StatusLabelNbArticles = new ToolStripStatusLabel();
+            using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+            {
+                Connexion.Open();
+
+                string Requete = "SELECT COUNT(*) AS NbArticles FROM Articles";
+
+                using (SQLiteCommand Commande = new SQLiteCommand(Requete, Connexion))
+                {
+                    SQLiteDataReader Lecteur = Commande.ExecuteReader();
+
+                    while (Lecteur.Read())
+                    {
+                        StatusLabelNbArticles.Text = Lecteur["NbArticles"].ToString() + " Articles";
+                    }
+                }
+            }
+            statusStrip1.Items.Add(StatusLabelNbArticles);
         }
 
 
@@ -119,18 +138,18 @@ namespace Hector
 
         }
 
-        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        private void treeView1_AfterSelect(object Sender, TreeViewEventArgs Args)
         {
-            if(e.Node.Text == "Tous les articles")
+            if(Args.Node.Text == "Tous les articles")
             {
                 listView1.Columns.Clear();
                 listView1.Items.Clear();
 
                 listView1.Columns.Add("RefArticle");
                 listView1.Columns.Add("Description");
-                listView1.Columns.Add("Famille");
-                listView1.Columns.Add("Sous-famille");
-                listView1.Columns.Add("Marque");
+                listView1.Columns.Add("Familles");
+                listView1.Columns.Add("Sous-familles");
+                listView1.Columns.Add("Marques");
                 listView1.Columns.Add("Prix");
                 listView1.Columns.Add("Quantité");
 
@@ -162,12 +181,12 @@ namespace Hector
                     }
                 }
             }
-            else if (e.Node.Text == "Familles")
+            else if (Args.Node.Text == "Familles")
             {
                 listView1.Columns.Clear();
                 listView1.Items.Clear();
 
-                listView1.Columns.Add("Nom");
+                listView1.Columns.Add("Description");
 
                 listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
@@ -194,12 +213,12 @@ namespace Hector
                     }
                 }
             }
-            else if (e.Node.Text == "Marques")
+            else if (Args.Node.Text == "Marques")
             {
                 listView1.Columns.Clear();
                 listView1.Items.Clear();
 
-                listView1.Columns.Add("Nom");
+                listView1.Columns.Add("Description");
 
                 listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
@@ -226,12 +245,12 @@ namespace Hector
                     }
                 }
             }
-            else if (e.Node.Parent.Text == "Familles")
+            else if (Args.Node.Parent.Text == "Familles")
             {
                 listView1.Columns.Clear();
                 listView1.Items.Clear();
 
-                listView1.Columns.Add("Nom");
+                listView1.Columns.Add("Description");
 
                 listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
@@ -244,7 +263,7 @@ namespace Hector
                 {
                     Connexion.Open();
 
-                    string Requete = "SELECT Nom FROM SousFamilles WHERE RefFamille = (SELECT RefFamille FROM Familles WHERE Nom = '" + e.Node.Text + "')";
+                    string Requete = "SELECT Nom FROM SousFamilles WHERE RefFamille = (SELECT RefFamille FROM Familles WHERE Nom = '" + Args.Node.Text + "')";
 
                     using (SQLiteCommand Commande = new SQLiteCommand(Requete, Connexion))
                     {
@@ -258,16 +277,16 @@ namespace Hector
                     }
                 }
             }
-            else if (e.Node.Parent.Parent != null && e.Node.Parent.Parent.Text == "Familles")
+            else if (Args.Node.Parent.Parent != null && Args.Node.Parent.Parent.Text == "Familles")
             {
                 listView1.Columns.Clear();
                 listView1.Items.Clear();
 
                 listView1.Columns.Add("RefArticle");
                 listView1.Columns.Add("Description");
-                listView1.Columns.Add("Famille");
-                listView1.Columns.Add("Sous-famille");
-                listView1.Columns.Add("Marque");
+                listView1.Columns.Add("Familles");
+                listView1.Columns.Add("Sous-familles");
+                listView1.Columns.Add("Marques");
                 listView1.Columns.Add("Prix");
                 listView1.Columns.Add("Quantité");
 
@@ -286,8 +305,8 @@ namespace Hector
                                                     + " WHERE Articles.RefSousFamille = SousFamilles.RefSousFamille"
                                                     + " AND SousFamilles.RefFamille = Familles.RefFamille"
                                                     + " AND Articles.RefMarque = Marques.RefMarque"
-                                                    + " AND SousFamilles.RefFamille = (SELECT RefFamille FROM Familles WHERE Nom = '" + e.Node.Parent.Text + "')"
-                                                    + " AND Articles.RefSousFamille = (SELECT RefSousFamille FROM SousFamilles WHERE Nom = '" + e.Node.Text + "')";
+                                                    + " AND SousFamilles.RefFamille = (SELECT RefFamille FROM Familles WHERE Nom = '" + Args.Node.Parent.Text + "')"
+                                                    + " AND Articles.RefSousFamille = (SELECT RefSousFamille FROM SousFamilles WHERE Nom = '" + Args.Node.Text + "')";
 
                     using (SQLiteCommand Commande = new SQLiteCommand(Requete, Connexion))
                     {
@@ -301,16 +320,16 @@ namespace Hector
                     }
                 }
             }
-            else if (e.Node.Parent.Text == "Marques")
+            else if (Args.Node.Parent.Text == "Marques")
             {
                 listView1.Columns.Clear();
                 listView1.Items.Clear();
 
                 listView1.Columns.Add("RefArticle");
                 listView1.Columns.Add("Description");
-                listView1.Columns.Add("Famille");
-                listView1.Columns.Add("Sous-famille");
-                listView1.Columns.Add("Marque");
+                listView1.Columns.Add("Familles");
+                listView1.Columns.Add("Sous-familles");
+                listView1.Columns.Add("Marques");
                 listView1.Columns.Add("Prix");
                 listView1.Columns.Add("Quantité");
 
@@ -329,7 +348,7 @@ namespace Hector
                                                     + " WHERE Articles.RefSousFamille = SousFamilles.RefSousFamille"
                                                     + " AND SousFamilles.RefFamille = Familles.RefFamille"
                                                     + " AND Articles.RefMarque = Marques.RefMarque"
-                                                    + " AND Articles.RefMarque = (SELECT RefMarque FROM Marques WHERE Nom = '" + e.Node.Text + "')";
+                                                    + " AND Articles.RefMarque = (SELECT RefMarque FROM Marques WHERE Nom = '" + Args.Node.Text + "')";
 
                     using (SQLiteCommand Commande = new SQLiteCommand(Requete, Connexion))
                     {
@@ -348,6 +367,11 @@ namespace Hector
                 listView1.Columns.Clear();
                 listView1.Items.Clear();
             }
+        }
+
+        private void listView1_ColumnClick(object Sender, ColumnClickEventArgs Args)
+        {
+            
         }
     }
 }
