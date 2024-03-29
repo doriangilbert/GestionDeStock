@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SQLite;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -59,6 +60,25 @@ namespace Hector
 
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Sous_Familles"></param>
+        /// <param name="Famille"></param>
+        /// <param name="SousFamille"></param>
+        /// <returns></returns>
+        public bool TrouverSousFamille(List<(string, string)> Sous_Familles, string Famille, string SousFamille)
+        {
+            for (int IndiceSousFamille = 0; IndiceSousFamille < Sous_Familles.Count; IndiceSousFamille++)
+            {
+                if (Sous_Familles[IndiceSousFamille].Item1 == Famille && Sous_Familles[IndiceSousFamille].Item2 == SousFamille)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// On se connecte à la base de données puis on la vide.
         /// Ensuite, on parse le fichier csv choisi au préalable pour ajouter les objets dans la base de données vidée.
         /// </summary>
@@ -74,97 +94,156 @@ namespace Hector
                 // On trouve le nombre total de lignes du fichier.
                 int NombreLignes = File.ReadLines(_CheminFichier).Count();
 
-                //**************** On se connecte à la base de données ****************//
-
-                //**************** On supprime toutes les données de la base de données ****************//
-
-                // On lance la lecture du fichier
-                using (StreamReader Sr = File.OpenText(_CheminFichier))
+                using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
                 {
-                    // On s'occupe de connaitre le nombre de tables de la BDD
-                    int NombreColonnes = 0;
+                    Connexion.Open();
+
+                    //string RequeteSelectFamilles = "DELETE FROM";
 
                     // On crée le tableau accueillant tous les éléments du fichier
                     List<string[]> Tableau = new List<string[]>();
 
-                    if (!Sr.EndOfStream)
+                    // On lance la lecture du fichier
+                    using (StreamReader Sr = File.OpenText(_CheminFichier))
                     {
-                        string Ligne1 = Sr.ReadLine();
-                        // On supprime les espaces en trop après les ";"
-                        while (Ligne1.Contains("; "))
+                        // On s'occupe de connaitre le nombre de tables de la BDD
+                        int NombreColonnes = 0;
+
+                        if (!Sr.EndOfStream)
                         {
-                            Ligne1 = Ligne1.Replace("; ", ";");
-                        }
-                        // On supprime les espaces en trop avant les ";"
-                        while (Ligne1.Contains(" ;"))
-                        {
-                            Ligne1 = Ligne1.Replace(" ;", ";");
+                            string Ligne1 = Sr.ReadLine();
+                            // On supprime les espaces en trop après les ";"
+                            while (Ligne1.Contains("; "))
+                            {
+                                Ligne1 = Ligne1.Replace("; ", ";");
+                            }
+                            // On supprime les espaces en trop avant les ";"
+                            while (Ligne1.Contains(" ;"))
+                            {
+                                Ligne1 = Ligne1.Replace(" ;", ";");
+                            }
+
+                            // On sépare les colonnes via un tableau en omettant les espaces/cases vides.
+                            char[] Separateur = { ';' };
+                            string[] Mots1 = Ligne1.Split(Separateur, StringSplitOptions.RemoveEmptyEntries);
+
+                            // On garde le nombre de colonnes du tableau de côté
+                            // (pour éviter les erreurs type "pas assez de données" ou "trop de données dans cette ligne")
+                            NombreColonnes = Mots1.Length;
+
+                            Tableau.Add(Mots1);
                         }
 
-                        // On sépare les colonnes via un tableau en omettant les espaces/cases vides.
-                        char[] Separateur = { ';' };
-                        string[] Mots1 = Ligne1.Split(Separateur, StringSplitOptions.RemoveEmptyEntries);
-                        // On garde le nombre de colonnes du tableau de côté
-                        // (pour éviter les erreurs type "pas assez de données" ou "trop de données dans cette ligne")
-                        NombreColonnes = Mots1.Length;
+                        // On parcourt toutes les lignes du fichier
+                        while (!Sr.EndOfStream)
+                        {
+                            string Ligne = Sr.ReadLine();
 
-                        Tableau.Add(Mots1);
+                            // On supprime les espaces en trop après les ";"
+                            while (Ligne.Contains("; "))
+                            {
+                                Ligne = Ligne.Replace("; ", ";");
+                            }
+                            // On supprime les espaces en trop avant les ";"
+                            while (Ligne.Contains(" ;"))
+                            {
+                                Ligne = Ligne.Replace(" ;", ";");
+                            }
+
+                            // On sépare les colonnes via un tableau en omettant les espaces / cases vides.
+                            char[] Separateur = { ';' };
+                            string[] Mots = Ligne.Split(Separateur, StringSplitOptions.RemoveEmptyEntries);
+
+                            // On regarde si il y a bien le bon nombre d'informations / de colonnes.
+
+                            if (Mots.Length == NombreColonnes)
+                            {
+                                Tableau.Add(Mots);
+                            }
+
+                            else
+                            {
+                                NombreErreurs++;
+                            }
+                        }
+
+                        string phrase = "";
+                        for (int i = 0; i < NombreLignes - NombreErreurs; i++)
+                        {
+                            phrase = "";
+                            for (int j = 0; j < NombreColonnes; j++)
+                            {
+                                phrase += Tableau[i][j];
+                            }
+                            Console.WriteLine(phrase);
+                        }
+
+                        Sr.Close();
+                        Sr.Dispose();
+
                     }
 
-                    // On parcourt toutes les lignes du fichier
-                    while (!Sr.EndOfStream)
+                    List<string> Marques = new List<string>();
+                    List<string> Familles = new List<string>();
+                    List<(string, string)> Sous_Familles = new List<(string, string)>();
+
+                    // On parcourt le tableau venant d'être rempli
+                    for (int IndiceLigne = 1; IndiceLigne <= Tableau.Count; IndiceLigne++)
                     {
-                        string Ligne = Sr.ReadLine();
-
-                        // On supprime les espaces en trop après les ";"
-                        while (Ligne.Contains("; "))
+                        // Pour trouver toutes les marques
+                        if (Marques.Contains(Tableau[IndiceLigne][2]) == false)
                         {
-                            Ligne = Ligne.Replace("; ", ";");
-                        }
-                        // On supprime les espaces en trop avant les ";"
-                        while (Ligne.Contains(" ;"))
-                        {
-                            Ligne = Ligne.Replace(" ;", ";");
+                            Marques.Add(Tableau[IndiceLigne][2]);
                         }
 
-                        // On sépare les colonnes via un tableau en omettant les espaces / cases vides.
-                        char[] Separateur = { ';' };
-                        string[] Mots = Ligne.Split(Separateur, StringSplitOptions.RemoveEmptyEntries);
-
-                        // On regarde si il y a bien le bon nombre d'informations / de colonnes.
-
-                        if (Mots.Length == NombreColonnes)
+                        // Pour trouver toutes les familles
+                        if (Familles.Contains(Tableau[IndiceLigne][3]) == false)
                         {
-                            Tableau.Add(Mots);
+                            Familles.Add(Tableau[IndiceLigne][3]);
                         }
 
-                        else
+                        // Pour trouver les sous-familles
+                        if (TrouverSousFamille(Sous_Familles, Tableau[IndiceLigne][3], Tableau[IndiceLigne][4]) == false)
                         {
-                            NombreErreurs++;
+                            Sous_Familles.Add((Tableau[IndiceLigne][3], Tableau[IndiceLigne][4]));
                         }
                     }
 
-                    string phrase = "";
-                    for (int i = 0; i < NombreLignes - NombreErreurs; i++)
+                    string RequeteAjoutMarque = "";
+                    // On ajoute les éléments de la table Marques
+                    for (int IndiceMarque = 0; IndiceMarque < Marques.Count; IndiceMarque++)
                     {
-                        phrase = "";
-                        for (int j = 0; j < NombreColonnes; j++)
-                        {
-                            phrase += Tableau[i][j];
-                        }
-                        Console.WriteLine(phrase);
+                        RequeteAjoutMarque = "INSERT INTO Marques (Nom) VALUES ('" + Marques[IndiceMarque] + "')";
                     }
 
-                    Sr.Close();
-                    Sr.Dispose();
+                    string RequeteAjoutFamille = "";
+                    // On ajoute les éléments de la table Familles
+                    for (int IndiceFamille = 0; IndiceFamille < Familles.Count; IndiceFamille++)
+                    {
+                        RequeteAjoutFamille = "INSERT INTO Familles (Nom) VALUES ('" + Familles[IndiceFamille] + "')";
+                    }
 
+                    string RequeteAjoutSousFamille = "";
+                    // On ajoute les éléments de la table Sous Familles avec la référence de la Famille
+                    for (int IndiceSousFamille = 0; IndiceSousFamille < Sous_Familles.Count; IndiceSousFamille++)
+                    {
+                        RequeteAjoutSousFamille = "INSERT INTO SousFamilles (RefFamille, Nom) VALUES ((SELECT RefFamille FROM Familles WHERE Nom = '" + Sous_Familles[IndiceSousFamille].Item1 + "'), '" + Sous_Familles[IndiceSousFamille].Item2 + "');";
+                    }
+
+                    string RequeteAjoutArticle = "";
+                    // Maintenant, on veut rajouter tous les articles
+                    for (int IndiceArticle = 0; IndiceArticle < Tableau.Count; IndiceArticle++)
+                    {
+                        RequeteAjoutArticle = "INSERT INTO Articles(RefArticle, Description, RefSousFamille, RefMarque, PrixHT, Quantite) " +
+                            "VALUES('" + Tableau[IndiceArticle][1] + "', '" + Tableau[IndiceArticle][0] + "', " +
+                            "(SELECT RefSousFamille FROM SousFamilles WHERE Nom = '" + Tableau[IndiceArticle][4] + "'), " +
+                            "(SELECT RefMarque FROM Marques WHERE Nom = '" + Tableau[IndiceArticle][2] + "'), " + Tableau[IndiceArticle][5] + ", 0)";
+                    }
+
+                    // On supprime le tableau alloué dynamiquement
+                    Tableau.Clear();
+                    Tableau = null;
                 }
-
-                List<string> Marques;
-                List<string> Familles;
-                List<string> Sous_Familles;
-
-
             }
         }
 
