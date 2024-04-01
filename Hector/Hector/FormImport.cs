@@ -60,21 +60,24 @@ namespace Hector
 
 
         /// <summary>
-        /// 
+        /// Cherche parmis une liste de couples famille/sous-famille si le couple entré en paramètre est déjà dedans ou non.
         /// </summary>
-        /// <param name="Sous_Familles"></param>
-        /// <param name="Famille"></param>
-        /// <param name="SousFamille"></param>
+        /// <param name="Sous_Familles">Objet <b>List<(string, string)></b> est la liste de couples dans laquelle nous recherchons un couple.</param>
+        /// <param name="Famille">Objet <b>string</b> est la première moitié du couple que l'on recherche.</param>
+        /// <param name="SousFamille">Objet <b>string</b> est la deuxième moitié du couple que l'on recherche.</param>
         /// <returns></returns>
         public bool TrouverSousFamille(List<(string, string)> Sous_Familles, string Famille, string SousFamille)
         {
+            // On parcourt la liste
             for (int IndiceSousFamille = 0; IndiceSousFamille < Sous_Familles.Count; IndiceSousFamille++)
             {
+                // On regarde si à la case IndisceSousFamille de la liste, les 2 parties du couples coincident.
                 if (Sous_Familles[IndiceSousFamille].Item1 == Famille && Sous_Familles[IndiceSousFamille].Item2 == SousFamille)
                 {
                     return true;
                 }
             }
+            // Si le couple n'appartient pas à la liste.
             return false;
         }
 
@@ -98,13 +101,31 @@ namespace Hector
                 {
                     Connexion.Open();
 
-                    //string RequeteSelectFamilles = "DELETE FROM";
+                    string query = "SELECT name FROM sqlite_master WHERE type='table';";
+                    string RequeteDeleteTable = "";
+                    using (SQLiteCommand command = new SQLiteCommand(query, Connexion))
+                    {
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                string tableName = reader.GetString(0);
+
+                                RequeteDeleteTable = "DELETE FROM " + tableName;
+
+                                using (SQLiteCommand CommandeDelete = new SQLiteCommand(RequeteDeleteTable, Connexion))
+                                {
+                                    CommandeDelete.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                    }
 
                     // On crée le tableau accueillant tous les éléments du fichier
                     List<string[]> Tableau = new List<string[]>();
 
                     // On lance la lecture du fichier
-                    using (StreamReader Sr = File.OpenText(_CheminFichier))
+                    using (StreamReader Sr = new StreamReader(_CheminFichier, Encoding.Default))
                     {
                         // On s'occupe de connaitre le nombre de tables de la BDD
                         int NombreColonnes = 0;
@@ -112,6 +133,7 @@ namespace Hector
                         if (!Sr.EndOfStream)
                         {
                             string Ligne1 = Sr.ReadLine();
+                            
                             // On supprime les espaces en trop après les ";"
                             while (Ligne1.Contains("; "))
                             {
@@ -138,7 +160,7 @@ namespace Hector
                         while (!Sr.EndOfStream)
                         {
                             string Ligne = Sr.ReadLine();
-
+                            Console.WriteLine(Ligne);
                             // On supprime les espaces en trop après les ";"
                             while (Ligne.Contains("; "))
                             {
@@ -167,20 +189,8 @@ namespace Hector
                             }
                         }
 
-                        string phrase = "";
-                        for (int i = 0; i < NombreLignes - NombreErreurs; i++)
-                        {
-                            phrase = "";
-                            for (int j = 0; j < NombreColonnes; j++)
-                            {
-                                phrase += Tableau[i][j];
-                            }
-                            Console.WriteLine(phrase);
-                        }
-
                         Sr.Close();
                         Sr.Dispose();
-
                     }
 
                     List<string> Marques = new List<string>();
@@ -188,7 +198,7 @@ namespace Hector
                     List<(string, string)> Sous_Familles = new List<(string, string)>();
 
                     // On parcourt le tableau venant d'être rempli
-                    for (int IndiceLigne = 1; IndiceLigne <= Tableau.Count; IndiceLigne++)
+                    for (int IndiceLigne = 1; IndiceLigne < Tableau.Count; IndiceLigne++)
                     {
                         // Pour trouver toutes les marques
                         if (Marques.Contains(Tableau[IndiceLigne][2]) == false)
@@ -203,17 +213,24 @@ namespace Hector
                         }
 
                         // Pour trouver les sous-familles
+                        // Nous faisons face à un couple de données, on implémente donc une nouvelle fonction.
                         if (TrouverSousFamille(Sous_Familles, Tableau[IndiceLigne][3], Tableau[IndiceLigne][4]) == false)
                         {
                             Sous_Familles.Add((Tableau[IndiceLigne][3], Tableau[IndiceLigne][4]));
                         }
                     }
 
+
                     string RequeteAjoutMarque = "";
                     // On ajoute les éléments de la table Marques
                     for (int IndiceMarque = 0; IndiceMarque < Marques.Count; IndiceMarque++)
                     {
                         RequeteAjoutMarque = "INSERT INTO Marques (Nom) VALUES ('" + Marques[IndiceMarque] + "')";
+
+                        using (SQLiteCommand CommandeMarques = new SQLiteCommand(RequeteAjoutMarque, Connexion))
+                        {
+                            CommandeMarques.ExecuteNonQuery();
+                        }
                     }
 
                     string RequeteAjoutFamille = "";
@@ -221,23 +238,41 @@ namespace Hector
                     for (int IndiceFamille = 0; IndiceFamille < Familles.Count; IndiceFamille++)
                     {
                         RequeteAjoutFamille = "INSERT INTO Familles (Nom) VALUES ('" + Familles[IndiceFamille] + "')";
+
+                        using (SQLiteCommand CommandeFamilles = new SQLiteCommand(RequeteAjoutFamille, Connexion))
+                        {
+                            CommandeFamilles.ExecuteNonQuery();
+                        }
                     }
 
                     string RequeteAjoutSousFamille = "";
                     // On ajoute les éléments de la table Sous Familles avec la référence de la Famille
                     for (int IndiceSousFamille = 0; IndiceSousFamille < Sous_Familles.Count; IndiceSousFamille++)
                     {
-                        RequeteAjoutSousFamille = "INSERT INTO SousFamilles (RefFamille, Nom) VALUES ((SELECT RefFamille FROM Familles WHERE Nom = '" + Sous_Familles[IndiceSousFamille].Item1 + "'), '" + Sous_Familles[IndiceSousFamille].Item2 + "');";
+                        RequeteAjoutSousFamille = "INSERT INTO SousFamilles (RefFamille, Nom) VALUES ((SELECT RefFamille FROM Familles WHERE Nom = '" + Sous_Familles[IndiceSousFamille].Item1 + "'), '" + Sous_Familles[IndiceSousFamille].Item2 + "')";
+
+                        using (SQLiteCommand CommandeSousFamilles = new SQLiteCommand(RequeteAjoutSousFamille, Connexion))
+                        {
+                            CommandeSousFamilles.ExecuteNonQuery();
+                        }
                     }
 
                     string RequeteAjoutArticle = "";
                     // Maintenant, on veut rajouter tous les articles
                     for (int IndiceArticle = 0; IndiceArticle < Tableau.Count; IndiceArticle++)
                     {
-                        RequeteAjoutArticle = "INSERT INTO Articles(RefArticle, Description, RefSousFamille, RefMarque, PrixHT, Quantite) " +
+                        RequeteAjoutArticle = "INSERT OR IGNORE INTO Articles(RefArticle, Description, RefSousFamille, RefMarque, PrixHT, Quantite) " +
                             "VALUES('" + Tableau[IndiceArticle][1] + "', '" + Tableau[IndiceArticle][0] + "', " +
                             "(SELECT RefSousFamille FROM SousFamilles WHERE Nom = '" + Tableau[IndiceArticle][4] + "'), " +
-                            "(SELECT RefMarque FROM Marques WHERE Nom = '" + Tableau[IndiceArticle][2] + "'), " + Tableau[IndiceArticle][5] + ", 0)";
+                            "(SELECT RefMarque FROM Marques WHERE Nom = '" + Tableau[IndiceArticle][2] + "'), @Valeur5, 0)";
+
+                        using (SQLiteCommand CommandeArticles = new SQLiteCommand(RequeteAjoutArticle, Connexion))
+                        {
+                            // Pour que la Query accepte de modifier le string en entier / nombre
+                            CommandeArticles.Parameters.AddWithValue("@Valeur5", Tableau[IndiceArticle][5]);
+
+                            CommandeArticles.ExecuteNonQuery();
+                        }
                     }
 
                     // On supprime le tableau alloué dynamiquement
