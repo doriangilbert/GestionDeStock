@@ -97,10 +97,12 @@ namespace Hector
                 // On trouve le nombre total de lignes du fichier.
                 int NombreLignes = File.ReadLines(_CheminFichier).Count();
 
+                // On se connecte à la BDD.
                 using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
                 {
                     Connexion.Open();
 
+                    // On prend toutes les tables du fichier.
                     string query = "SELECT name FROM sqlite_master WHERE type='table';";
                     string RequeteDeleteTable = "";
                     using (SQLiteCommand command = new SQLiteCommand(query, Connexion))
@@ -109,6 +111,7 @@ namespace Hector
                         {
                             while (reader.Read())
                             {
+                                // Puis on efface les données contenues dans toutes les tables.
                                 string tableName = reader.GetString(0);
 
                                 RequeteDeleteTable = "DELETE FROM " + tableName;
@@ -120,6 +123,7 @@ namespace Hector
                             }
                         }
                     }
+
 
                     // On crée le tableau accueillant tous les éléments du fichier
                     List<string[]> Tableau = new List<string[]>();
@@ -292,6 +296,87 @@ namespace Hector
         private void AjoutDonnees_Click(object Sender, EventArgs Args)
         {
             int NombreLignes = File.ReadLines(_CheminFichier).Count();
+        }
+
+
+        private (List<string[]>, int) ParserDonnees()
+        {
+            // On crée le tableau accueillant tous les éléments du fichier
+            List<string[]> Tableau = new List<string[]>();
+
+            // On lance la lecture du fichier
+            using (StreamReader Sr = new StreamReader(_CheminFichier, Encoding.Default))
+            {
+                // On s'occupe de connaitre le nombre de tables de la BDD
+                int NombreColonnes = 0;
+
+                // On veut aussi connaître le nombre d'erreurs lors du parse.
+
+
+                if (!Sr.EndOfStream)
+                {
+                    string Ligne1 = Sr.ReadLine();
+
+                    // On supprime les espaces en trop après les ";"
+                    while (Ligne1.Contains("; "))
+                    {
+                        Ligne1 = Ligne1.Replace("; ", ";");
+                    }
+                    // On supprime les espaces en trop avant les ";"
+                    while (Ligne1.Contains(" ;"))
+                    {
+                        Ligne1 = Ligne1.Replace(" ;", ";");
+                    }
+
+                    // On sépare les colonnes via un tableau en omettant les espaces/cases vides.
+                    char[] Separateur = { ';' };
+                    string[] Mots1 = Ligne1.Split(Separateur, StringSplitOptions.RemoveEmptyEntries);
+
+                    // On garde le nombre de colonnes du tableau de côté
+                    // (pour éviter les erreurs type "pas assez de données" ou "trop de données dans cette ligne")
+                    NombreColonnes = Mots1.Length;
+
+                    Tableau.Add(Mots1);
+                }
+
+                // On parcourt toutes les lignes du fichier
+                while (!Sr.EndOfStream)
+                {
+                    string Ligne = Sr.ReadLine();
+                    Console.WriteLine(Ligne);
+                    // On supprime les espaces en trop après les ";"
+                    while (Ligne.Contains("; "))
+                    {
+                        Ligne = Ligne.Replace("; ", ";");
+                    }
+                    // On supprime les espaces en trop avant les ";"
+                    while (Ligne.Contains(" ;"))
+                    {
+                        Ligne = Ligne.Replace(" ;", ";");
+                    }
+
+                    // On sépare les colonnes via un tableau en omettant les espaces / cases vides.
+                    char[] Separateur = { ';' };
+                    string[] Mots = Ligne.Split(Separateur, StringSplitOptions.RemoveEmptyEntries);
+
+                    // On regarde si il y a bien le bon nombre d'informations / de colonnes.
+
+                    if (Mots.Length == NombreColonnes)
+                    {
+                        Tableau.Add(Mots);
+                    }
+
+                    else
+                    {
+                        NombreErreurs++;
+                    }
+                }
+
+                Sr.Close();
+                Sr.Dispose();
+
+
+            }
         }
     }
 }
