@@ -106,13 +106,13 @@ namespace Hector
 
 
         /// <summary>
-        /// 
+        /// Permet d'actualiser les données de la page.
         /// </summary>
         /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
         /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
         private void ActualiserToolStripMenuItem_Click(object Sender, EventArgs Args)
         {
-
+            this.Refresh();
         }
 
 
