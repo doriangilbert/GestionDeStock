@@ -194,6 +194,13 @@ namespace Hector
 
                     // On modifie le label pour indiquer que l'on a fini l'ajout
                     this.label1.Text = "Terminé";
+
+                    // On affiche le résultat via un MessageBox
+                    string Message = "Parmis les " + (NombreLignes - 1) + " lignes à lire dans le fichier, " +
+                            "il y a eu l'ajout de " + (NombreLignes - 1 - NombreErreurs) + " élément(s), " +
+                            "et " + NombreErreurs + " erreur(s).";
+
+                    MessageBox.Show(Message);
                 }
             }
         }
@@ -237,6 +244,9 @@ namespace Hector
                     string RequeteRechercheRef = "";
                     string RequeteAjoutArticle = "";
 
+                    // On crée une variable comptant le nombre d'update réalisées (en contraste avec les insert)
+                    int NombreUpdate = 0;
+
                     // On parcourt le tableau des données
                     for (int IndiceArticle = 1; IndiceArticle < Tableau.Count; IndiceArticle++)
                     {
@@ -255,6 +265,23 @@ namespace Hector
                                 // Si la ref n'existe pas, on rajoute l'article dans la BDD
                                 if (!Lecteur.HasRows)
                                 {
+                                    RequeteAjoutArticle = "INSERT INTO Articles(RefArticle, Description, RefSousFamille, RefMarque, PrixHT, Quantite) " +
+                                        "VALUES('" + Tableau[IndiceArticle][1] + "', '" + Tableau[IndiceArticle][0] + "', " +
+                                        "(SELECT RefSousFamille FROM SousFamilles WHERE Nom = '" + Tableau[IndiceArticle][4] + "'), " +
+                                        "(SELECT RefMarque FROM Marques WHERE Nom = '" + Tableau[IndiceArticle][2] + "'), @Valeur5, 0)";
+
+                                    using (SQLiteCommand CommandeArticles = new SQLiteCommand(RequeteAjoutArticle, Connexion))
+                                    {
+                                        // Pour que la Query accepte de modifier le string en entier / nombre
+                                        CommandeArticles.Parameters.AddWithValue("@Valeur5", Tableau[IndiceArticle][5]);
+
+                                        CommandeArticles.ExecuteNonQuery();
+                                    }
+                                }
+
+                                // Sinon, on update l'article
+                                else
+                                {
                                     RequeteAjoutArticle = "UPDATE Articles SET Description = '" + Tableau[IndiceArticle][0] + "', " +
                                         "RefSousFamille = (SELECT RefSousFamille FROM SousFamilles WHERE Nom = '" + Tableau[IndiceArticle][4] + "'), " +
                                         "RefMarque = (SELECT RefMarque FROM Marques WHERE Nom = '" + Tableau[IndiceArticle][2] + "'), " +
@@ -267,6 +294,8 @@ namespace Hector
 
                                         CommandeArticles.ExecuteNonQuery();
                                     }
+
+                                    NombreUpdate++;
                                 }
                             }
                         }
@@ -281,6 +310,13 @@ namespace Hector
 
                     // On modifie le label pour indiquer que l'on a fini l'ajout
                     this.label1.Text = "Terminé";
+
+                    // On affiche le résultat via un MessageBox
+                    string Message = "Parmis les " + (NombreLignes - 1) + " lignes à lire dans le fichier, " +
+                            "il y a eu l'ajout de " + (NombreLignes - 1 - NombreErreurs - NombreUpdate) + " élément(s), " +
+                            "avec " + NombreUpdate + " update(s) et " + NombreErreurs + " erreur(s).";
+                    
+                    MessageBox.Show(Message);
                 }
             }
         }

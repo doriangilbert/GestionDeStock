@@ -112,7 +112,8 @@ namespace Hector
         /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
         private void ActualiserToolStripMenuItem_Click(object Sender, EventArgs Args)
         {
-            this.Refresh();
+            this.FormMain_Load(Sender, Args);
+            //this.Refresh();
         }
 
 
