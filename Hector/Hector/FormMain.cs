@@ -24,6 +24,7 @@ namespace Hector
         public FormMain()
         {
             InitializeComponent();
+            this.Size = new Size(1600, 600);
         }
 
 
