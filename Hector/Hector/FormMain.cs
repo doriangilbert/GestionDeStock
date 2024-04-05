@@ -704,5 +704,13 @@ namespace Hector
                 this.FormMain_Load(Sender, Args);
             }
         }
+
+        private void listView1_MouseDown(object Sender, MouseEventArgs Args)
+        {
+            if (Args.Button == MouseButtons.Right)
+            {
+                contextMenuStrip1.Show(Cursor.Position);
+            }
+        }
     }
 }

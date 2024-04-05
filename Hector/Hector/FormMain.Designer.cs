@@ -29,6 +29,7 @@ namespace Hector
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Tous les articles");
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Familles");
             System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Marques");
@@ -41,11 +42,16 @@ namespace Hector
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.listView1 = new System.Windows.Forms.ListView();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ajouterUnÉlémentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.modifierLélémentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.supprimerLélémentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -156,6 +162,34 @@ namespace Hector
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
             this.listView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView1_KeyDown);
+            this.listView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseDown);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ajouterUnÉlémentToolStripMenuItem,
+            this.modifierLélémentToolStripMenuItem,
+            this.supprimerLélémentToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(182, 70);
+            // 
+            // ajouterUnÉlémentToolStripMenuItem
+            // 
+            this.ajouterUnÉlémentToolStripMenuItem.Name = "ajouterUnÉlémentToolStripMenuItem";
+            this.ajouterUnÉlémentToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.ajouterUnÉlémentToolStripMenuItem.Text = "Ajouter un élément";
+            // 
+            // modifierLélémentToolStripMenuItem
+            // 
+            this.modifierLélémentToolStripMenuItem.Name = "modifierLélémentToolStripMenuItem";
+            this.modifierLélémentToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.modifierLélémentToolStripMenuItem.Text = "Modifier l\'élément";
+            // 
+            // supprimerLélémentToolStripMenuItem
+            // 
+            this.supprimerLélémentToolStripMenuItem.Name = "supprimerLélémentToolStripMenuItem";
+            this.supprimerLélémentToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.supprimerLélémentToolStripMenuItem.Text = "Supprimer l\'élément";
             // 
             // FormMain
             // 
@@ -176,6 +210,7 @@ namespace Hector
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -192,6 +227,10 @@ namespace Hector
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem ajouterUnÉlémentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem modifierLélémentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem supprimerLélémentToolStripMenuItem;
     }
 }
 
