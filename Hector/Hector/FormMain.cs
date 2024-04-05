@@ -602,5 +602,20 @@ namespace Hector
         {
             
         }
+
+        /// <summary>
+        /// Permet de gérer l'appui sur une touche du clavier
+        /// </summary>
+        /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
+        /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
+        private void listView1_KeyDown(object Sender, KeyEventArgs Args)
+        {
+            // Si la touche F5 est appuyée
+            if (Args.KeyCode == Keys.F5)
+            {
+                // Rechargement de la liste
+                this.FormMain_Load(Sender, Args);
+            }
+        }
     }
 }
