@@ -24,7 +24,6 @@ namespace Hector
         public FormMain()
         {
             InitializeComponent();
-            this.Size = new Size(1600, 600);
         }
 
 
@@ -45,7 +44,6 @@ namespace Hector
             if (Settings.Default.Position.X < 0 || Settings.Default.Position.X + Settings.Default.Taille.Width > LongueurEcran)
             {
                 this.Left = 0;
-                Console.WriteLine("coucou");
             }
             else
             {
@@ -55,7 +53,6 @@ namespace Hector
             if (Settings.Default.Position.Y < 0 || Settings.Default.Position.Y + Settings.Default.Taille.Height > HauteurEcran)
             {
                 this.Top = 0;
-                Console.WriteLine("salut");
             }
             else
             {
@@ -63,6 +60,12 @@ namespace Hector
             }
 
             // On modifie la taille de la fenêtre pour qu'elle soit la même qu'avant la fermeture de la fenêtre.
+            // On force la fenêtre à avoir une taille minimum lors de son lancement
+            if (Settings.Default.Taille.Width < 700 || Settings.Default.Taille.Height < 400)
+            {
+                Settings.Default.Taille = new Size(700, 400);
+                Settings.Default.Save();
+            }
             this.Size = Settings.Default.Taille;
 
             // Suppression des noeuds de l'arbre
@@ -144,7 +147,7 @@ namespace Hector
                 }
 
                 // Sélection du premier noeud de l'arbre
-                this.treeView1_AfterSelect(Sender, new TreeViewEventArgs(treeView1.Nodes[0]));
+                this.TreeView1_AfterSelect(Sender, new TreeViewEventArgs(treeView1.Nodes[0]));
             }
 
             // Réinitialisation de la barre de statut
@@ -325,7 +328,7 @@ namespace Hector
         /// </summary>
         /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
         /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
-        private void treeView1_AfterSelect(object Sender, TreeViewEventArgs Args)
+        private void TreeView1_AfterSelect(object Sender, TreeViewEventArgs Args)
         {
             // Réinitialisation du tri de la liste
             listView1.ListViewItemSorter = new ListViewItemComparer();
@@ -640,7 +643,7 @@ namespace Hector
         /// </summary>
         /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
         /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
-        private void listView1_ColumnClick(object Sender, ColumnClickEventArgs Args)
+        private void ListView1_ColumnClick(object Sender, ColumnClickEventArgs Args)
         {
             // Tri des éléments de la liste en fonction de la colonne sélectionnée
             listView1.ListViewItemSorter = new ListViewItemComparer(Args.Column);
@@ -730,7 +733,7 @@ namespace Hector
         /// </summary>
         /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
         /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
-        private void listView1_KeyDown(object Sender, KeyEventArgs Args)
+        private void ListView1_KeyDown(object Sender, KeyEventArgs Args)
         {
             // Si la touche F5 est appuyée
             if (Args.KeyCode == Keys.F5)
@@ -741,7 +744,7 @@ namespace Hector
             
         }
 
-        private void listView1_MouseDown(object Sender, MouseEventArgs Args)
+        private void ListView1_MouseDown(object Sender, MouseEventArgs Args)
         {
             if (Args.Button == MouseButtons.Right)
             {
