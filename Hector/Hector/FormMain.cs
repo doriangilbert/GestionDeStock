@@ -31,6 +31,12 @@ namespace Hector
         /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
         private void FormMain_Load(object Sender, EventArgs Args)
         {
+            // Suppression des noeuds de l'arbre
+            foreach (TreeNode Noeud in treeView1.Nodes)
+            {
+                Noeud.Nodes.Clear();
+            }
+
             // Création de la connexion à la base de données
             using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
             {
@@ -102,6 +108,9 @@ namespace Hector
                         treeView1.EndUpdate();
                     }
                 }
+
+                // Sélection du premier noeud de l'arbre
+                this.treeView1_AfterSelect(Sender, new TreeViewEventArgs(treeView1.Nodes[0]));
             }
 
             // Création du label du nombre d'articles dans la barre de statut
@@ -143,8 +152,8 @@ namespace Hector
         /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
         private void ActualiserToolStripMenuItem_Click(object Sender, EventArgs Args)
         {
+            // Rechargement de la page
             this.FormMain_Load(Sender, Args);
-            //this.Refresh();
         }
 
 
@@ -155,8 +164,12 @@ namespace Hector
         /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
         private void ImporterToolStripMenuItem_Click_1(object Sender, EventArgs Args)
         {
+            // Création de la fenêtre modale d'importation
             FormImport FenetreImportation = new FormImport();
+            // Ouverture de la fenêtre modale
             FenetreImportation.ShowDialog();
+            // Rechargement de la page
+            this.FormMain_Load(Sender, Args);
         }
 
 
