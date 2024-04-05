@@ -19,9 +19,9 @@ namespace Hector
         /// <summary>
         /// Constructeur de la classe SousFamille
         /// </summary>
-        /// <param name="RefSousFamille"></param>
-        /// <param name="FamilleSousFamille"></param>
-        /// <param name="Nom"></param>
+        /// <param name="RefSousFamille">Reférence de la sous-famille</param>
+        /// <param name="FamilleSousFamille">Famille de la sous-famille</param>
+        /// <param name="Nom">Nom de la sous-famille</param>
         public SousFamille(int RefSousFamille, Famille FamilleSousFamille, string Nom)
         {
             this.RefSousFamille = RefSousFamille;

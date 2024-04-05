@@ -18,8 +18,8 @@ namespace Hector
         /// <summary>
         /// Constructeur de la classe Marque
         /// </summary>
-        /// <param name="RefMarque"></param>
-        /// <param name="Nom"></param>
+        /// <param name="RefMarque">Reférence de la marque</param>
+        /// <param name="Nom">Nom de la marque</param>
         public Marque(int RefMarque, string Nom)
         {
             this.RefMarque = RefMarque;

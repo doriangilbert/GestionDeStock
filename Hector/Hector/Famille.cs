@@ -18,8 +18,8 @@ namespace Hector
         /// <summary>
         /// Constructeur de la classe Famille
         /// </summary>
-        /// <param name="RefFamille"></param>
-        /// <param name="Nom"></param>
+        /// <param name="RefFamille">Référence de la famille</param>
+        /// <param name="Nom">Nom de la famille</param>
         public Famille(int RefFamille, string Nom)
         {
             this.RefFamille = RefFamille;

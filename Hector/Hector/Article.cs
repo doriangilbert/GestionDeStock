@@ -22,12 +22,12 @@ namespace Hector
         /// <summary>
         /// Constructeur de la classe Article
         /// </summary>
-        /// <param name="RefArticle"></param>
-        /// <param name="Description"></param>
-        /// <param name="SousFamilleArticle"></param>
-        /// <param name="MarqueArticle"></param>
-        /// <param name="PrixHT"></param>
-        /// <param name="Quantite"></param>
+        /// <param name="RefArticle">Référence de l'article</param>
+        /// <param name="Description">Description de l'article</param>
+        /// <param name="SousFamilleArticle">Sous-famille de l'article</param>
+        /// <param name="MarqueArticle">Marque de l'article</param>
+        /// <param name="PrixHT">Prix hors taxe de l'article</param>
+        /// <param name="Quantite">Quantité de l'article</param>
         public Article(string RefArticle, string Description, SousFamille SousFamilleArticle, Marque MarqueArticle, float PrixHT, int Quantite)
         {
             this.RefArticle = RefArticle;

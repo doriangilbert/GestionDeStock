@@ -113,6 +113,7 @@ namespace Hector
                 this.treeView1_AfterSelect(Sender, new TreeViewEventArgs(treeView1.Nodes[0]));
             }
 
+            // Réinitialisation de la barre de statut
             statusStrip1.Items.Clear();
 
             // Création du label du nombre d'articles dans la barre de statut
@@ -291,8 +292,14 @@ namespace Hector
         /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
         private void treeView1_AfterSelect(object Sender, TreeViewEventArgs Args)
         {
+            // Réinitialisation du tri de la liste
+            listView1.ListViewItemSorter = new ListViewItemComparer();
+
+            // Réinitialisation des groupes
+            listView1.Groups.Clear();
+
             // Si le noeud sélectionné est "Tous les articles"
-            if(Args.Node.Text == "Tous les articles")
+            if (Args.Node.Text == "Tous les articles")
             {
                 // Réinitialisation de la liste
                 listView1.Columns.Clear();
@@ -600,7 +607,87 @@ namespace Hector
         /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
         private void listView1_ColumnClick(object Sender, ColumnClickEventArgs Args)
         {
-            
+            // Tri des éléments de la liste en fonction de la colonne sélectionnée
+            listView1.ListViewItemSorter = new ListViewItemComparer(Args.Column);
+
+            // Récupération du nom de la colonne sélectionnée
+            string NomColonne = listView1.Columns[Args.Column].Text;
+
+            // Réinitialisation des groupes
+            listView1.Groups.Clear();
+
+            // Si la colonne sélectionnée correspond à la colonne "Familles", "Sous-familles" ou "Marques"
+            if (NomColonne == "Familles" || NomColonne == "Sous-familles" || NomColonne == "Marques")
+            {
+                // Parcours des éléments de la liste
+                foreach (ListViewItem Item in listView1.Items)
+                {
+                    // Booléen permettant de savoir si le groupe existe
+                    bool GroupeExiste = false;
+
+                    // Pour chaque groupe de la liste
+                    foreach (ListViewGroup Groupe in listView1.Groups)
+                    {
+                        // Si le groupe existe
+                        if (Item.SubItems[Args.Column].Text == Groupe.Header)
+                        {
+                            GroupeExiste = true;
+                        }
+                    }
+                    // Si le groupe n'existe pas
+                    if (!GroupeExiste)
+                    {
+                        // Ajout du groupe
+                        listView1.Groups.Add(new ListViewGroup(Item.SubItems[Args.Column].Text, HorizontalAlignment.Left));
+                    }
+                    // Pour chaque groupe de la liste
+                    foreach (ListViewGroup Groupe in listView1.Groups)
+                    {
+                        // Si le texte dans la colonne pour l'élément correspond au nom du groupe
+                        if (Item.SubItems[Args.Column].Text == Groupe.Header)
+                        {
+                            // Ajout de l'élément dans le groupe
+                            Item.Group = Groupe;
+                        }
+                    }
+                }
+            }
+            // Si la colonne sélectionnée correspond à la colonne "Description"
+            else if (NomColonne == "Description")
+            {
+                // Parcours des éléments de la liste
+                foreach (ListViewItem Item in listView1.Items)
+                {
+                    // Booléen permettant de savoir si le groupe existe
+                    bool GroupeExiste = false;
+
+                    // Pour chaque groupe de la liste
+                    foreach (ListViewGroup Groupe in listView1.Groups)
+                    {
+                        // Si le groupe correspondant à la première lettre de la description existe
+                        if (Item.SubItems[Args.Column].Text.StartsWith(Groupe.Header))
+                        {
+                            GroupeExiste = true;
+                        }
+                    }
+                    // Si le groupe n'existe pas
+                    if (!GroupeExiste)
+                    {
+                        // Ajout du groupe nommé selon la première lettre de la description
+                        listView1.Groups.Add(new ListViewGroup(Item.SubItems[Args.Column].Text.Substring(0,1), HorizontalAlignment.Left));
+                    }
+                    // Pour chaque groupe de la liste
+                    foreach (ListViewGroup Groupe in listView1.Groups)
+                    {
+                        // Si le texte dans la colonne pour l'élément commence par le nom du groupe
+                        if (Item.SubItems[Args.Column].Text.StartsWith(Groupe.Header))
+                        {
+                            // Ajout de l'élément dans le groupe
+                            Item.Group = Groupe;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
