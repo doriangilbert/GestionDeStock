@@ -18,6 +18,11 @@ namespace Hector
     /// </summary>
     public partial class FormMain : Form
     {
+        private string Table;
+        private string ParentTable;
+        private string GrandParentTable;
+        private bool GrandParentNull;
+
         /// <summary>
         /// Pour lancer la fenêtre (constructeur par défaut)
         /// </summary>
@@ -330,6 +335,7 @@ namespace Hector
         /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
         private void TreeView1_AfterSelect(object Sender, TreeViewEventArgs Args)
         {
+
             // Réinitialisation du tri de la liste
             listView1.ListViewItemSorter = new ListViewItemComparer();
 
@@ -339,6 +345,11 @@ namespace Hector
             // Si le noeud sélectionné est "Tous les articles"
             if (Args.Node.Text == "Tous les articles")
             {
+                // On récupère le nom de la node active
+                Table = Args.Node.Text;
+                ParentTable = "";
+                GrandParentTable = "";
+
                 // Réinitialisation de la liste
                 listView1.Columns.Clear();
                 listView1.Items.Clear();
@@ -392,6 +403,11 @@ namespace Hector
             // Si le noeud sélectionné est "Familles"
             else if (Args.Node.Text == "Familles")
             {
+                // On récupère le nom de la node active
+                Table = Args.Node.Text;
+                ParentTable = "";
+                GrandParentTable = "";
+
                 // Réinitialisation de la liste
                 listView1.Columns.Clear();
                 listView1.Items.Clear();
@@ -436,6 +452,11 @@ namespace Hector
             // Si le noeud sélectionné est "Marques"
             else if (Args.Node.Text == "Marques")
             {
+                // On récupère le nom de la node active
+                Table = Args.Node.Text;
+                ParentTable = "";
+                GrandParentTable = "";
+
                 // Réinitialisation de la liste
                 listView1.Columns.Clear();
                 listView1.Items.Clear();
@@ -480,6 +501,11 @@ namespace Hector
             // Si le noeud sélectionné correspond à une famille
             else if (Args.Node.Parent.Text == "Familles")
             {
+                // On récupère le nom de la node parent
+                ParentTable = Args.Node.Parent.Text;
+                Table = "";
+                GrandParentTable = "";
+
                 // Réinitialisation de la liste
                 listView1.Columns.Clear();
                 listView1.Items.Clear();
@@ -524,6 +550,12 @@ namespace Hector
             // Si le noeud sélectionné correspond à une sous-famille
             else if (Args.Node.Parent.Parent != null && Args.Node.Parent.Parent.Text == "Familles")
             {
+                // On récupère le nom de la node grand parent
+                GrandParentTable = Args.Node.Parent.Parent.Text;
+                GrandParentNull = false;
+                ParentTable = "";
+                Table = "";
+
                 // Réinitialisation de la liste
                 listView1.Columns.Clear();
                 listView1.Items.Clear();
@@ -579,6 +611,11 @@ namespace Hector
             // Si le noeud sélectionné correspond à une marque
             else if (Args.Node.Parent.Text == "Marques")
             {
+                // On récupère le nom de la node parent
+                ParentTable = Args.Node.Parent.Text;
+                Table = "";
+                GrandParentTable = "";
+
                 // Réinitialisation de la liste
                 listView1.Columns.Clear();
                 listView1.Items.Clear();
@@ -642,7 +679,7 @@ namespace Hector
         /// Permet de gérer le clic sur une colonne de la liste
         /// </summary>
         /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
-        /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
+        /// <param name="Args">Objet <b>ColumnClickEventArgs</b> contient les informations sur l'évènement.</param>
         private void ListView1_ColumnClick(object Sender, ColumnClickEventArgs Args)
         {
             // Tri des éléments de la liste en fonction de la colonne sélectionnée
@@ -732,7 +769,7 @@ namespace Hector
         /// Permet de gérer l'appui sur une touche du clavier
         /// </summary>
         /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
-        /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
+        /// <param name="Args">Objet <b>KeyEventArgs</b> contient les informations sur l'évènement.</param>
         private void ListView1_KeyDown(object Sender, KeyEventArgs Args)
         {
             // Si la touche F5 est appuyée
@@ -744,6 +781,11 @@ namespace Hector
             
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
+        /// <param name="Args">Objet <b>MouseEventArgs</b> contient les informations sur l'évènement.</param>
         private void ListView1_MouseDown(object Sender, MouseEventArgs Args)
         {
             if (Args.Button == MouseButtons.Right)
@@ -753,6 +795,11 @@ namespace Hector
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
+        /// <param name="Events">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
         private void FormMain_FormClosed(object Sender, FormClosedEventArgs Events)
         {
             // On enregistre la position de la fenêtre
@@ -764,6 +811,167 @@ namespace Hector
             Settings.Default.Save();
 
             Console.WriteLine(Left + ", " + Top);
+        }
+
+
+
+
+        private void AjouterUnÉlémentToolStripMenuItem_Click(object Sender, EventArgs Events)
+        {
+            // On utilise la même disjonction de cas que la suppression
+        }
+
+        private void ModifierLélémentToolStripMenuItem_Click(object Sender, EventArgs Events)
+        {
+            // On utilise la même disjonction de cas que la suppression
+        }
+
+
+        /// <summary>
+        /// On peut supprimer les éléments via le menu contextuel. Seules les familles ne peuvent être supprimées.
+        /// </summary>
+        /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
+        /// <param name="Events">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
+        private void SupprimerLélémentToolStripMenuItem_Click(object Sender, EventArgs Events)
+        {
+            // On vérifie si un élément a été sélectionné
+            if (listView1.SelectedItems.Count > 0)
+            {
+                // On récupère l'élément sélectionné
+                ListViewItem selectedItem = listView1.SelectedItems[0];
+
+                // Si le noeud sélectionné est "Tous les articles"
+                if (Table == "Tous les articles")
+                {
+                    using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+                    {
+                        Connexion.Open();
+                        string RequeteAjoutArticle = "DELETE FROM Articles WHERE RefArticle = '" + selectedItem.Text + "'";
+
+                        using (SQLiteCommand CommandeArticles = new SQLiteCommand(RequeteAjoutArticle, Connexion))
+                        {
+                            CommandeArticles.ExecuteNonQuery();
+                        }
+                    }
+                }
+
+                // Si le noeud sélectionné est "Marques"
+                else if (Table == "Marques")
+                {
+                    using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+                    {
+                        Connexion.Open();
+
+                        // On recherche si un article utilise cette marque
+                        string RequeteRechercheMarque = "SELECT * FROM Articles WHERE RefMarque = (SELECT RefMarque FROM Marques WHERE Nom = '" + selectedItem.Text + "')";
+
+                        using (SQLiteCommand Commande = new SQLiteCommand(RequeteRechercheMarque, Connexion))
+                        {
+                            using (SQLiteDataReader Lecteur = Commande.ExecuteReader())
+                            {
+                                // Si aucun article utilise la marque, on supprime la marque de la BDD
+                                if (!Lecteur.HasRows)
+                                {
+                                    string RequeteSuppressionMarque = "DELETE FROM Marques WHERE RefMarque = '" + selectedItem.Text + "'";
+
+                                    using (SQLiteCommand CommandeArticles = new SQLiteCommand(RequeteSuppressionMarque, Connexion))
+                                    {
+                                        CommandeArticles.ExecuteNonQuery();
+                                    }
+
+                                    string Message = "La suppression a été effectuée!";
+                                    MessageBox.Show(Message);
+                                }
+
+                                // Si un article utilise la marque, on ne supprime pas la marque
+                                else
+                                {
+                                    string Message = "La marque est déjà utilisée par un article!!!";
+                                    MessageBox.Show(Message);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Si le noeud sélectionné est "Familles"
+                else if (Table == "Familles")
+                {
+                    using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+                    {
+                        Connexion.Open();
+                        Console.WriteLine("Familles");
+                    }
+                }
+
+                // Si le noeud sélectionné correspond à une famille (suppression sous famille)
+                else if (ParentTable == "Familles")
+                {
+                    using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+                    {
+                        Connexion.Open();
+                        // On recherche si un article utilise cette sous famille
+                        string RequeteRechercheMarque = "SELECT * FROM Articles WHERE RefSousFamille = (SELECT RefSousFamille FROM SousFamilles WHERE Nom = '" + selectedItem.Text + "')";
+
+                        using (SQLiteCommand Commande = new SQLiteCommand(RequeteRechercheMarque, Connexion))
+                        {
+                            using (SQLiteDataReader Lecteur = Commande.ExecuteReader())
+                            {
+                                // Si aucun article utilise la sous famille, on supprime la sous famille de la BDD
+                                if (!Lecteur.HasRows)
+                                {
+                                    string RequeteSuppressionMarque = "DELETE FROM SousFamilles WHERE RefSousFamille = '" + selectedItem.Text + "'";
+
+                                    using (SQLiteCommand CommandeArticles = new SQLiteCommand(RequeteSuppressionMarque, Connexion))
+                                    {
+                                        CommandeArticles.ExecuteNonQuery();
+                                    }
+
+                                    string Message = "La suppression a été effectuée!";
+                                    MessageBox.Show(Message);
+                                }
+
+                                // Si un article utilise la sous famille, on ne supprime pas la sous famille
+                                else
+                                {
+                                    string Message = "La sous famille est déjà utilisée par un article!!!";
+                                    MessageBox.Show(Message);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Si le noeud sélectionné correspond à une marque (suppression article)
+                else if (ParentTable == "Marques")
+                {
+                    using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+                    {
+                        Connexion.Open();
+                        string RequeteAjoutArticle = "DELETE FROM Articles WHERE RefArticle = '" + selectedItem.Text + "'";
+
+                        using (SQLiteCommand CommandeArticles = new SQLiteCommand(RequeteAjoutArticle, Connexion))
+                        {
+                            CommandeArticles.ExecuteNonQuery();
+                        }
+                    }
+                }
+
+                // Si le noeud sélectionné correspond à une sous famille (suppression article)
+                else if (GrandParentTable == "Familles" && GrandParentNull == false)
+                {
+                    using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+                    {
+                        Connexion.Open();
+                        string RequeteAjoutArticle = "DELETE FROM Articles WHERE RefArticle = '" + selectedItem.Text + "'";
+
+                        using (SQLiteCommand CommandeArticles = new SQLiteCommand(RequeteAjoutArticle, Connexion))
+                        {
+                            CommandeArticles.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
         }
     }
 }

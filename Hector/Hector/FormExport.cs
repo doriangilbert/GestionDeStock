@@ -102,9 +102,17 @@ namespace Hector
                         "JOIN SousFamilles ON Articles.RefSousFamille = SousFamilles.RefSousFamille " +
                         "JOIN Familles ON SousFamilles.RefFamille = Familles.RefFamille";
 
+                    // On modifie le label pour indiquer que l'on récupère les articles dans la BDD
+                    this.LabelStatus.Text = "Récupération des données en cours...";
+
                     using (SQLiteCommand Commande = new SQLiteCommand(RequeteDonnees, Connexion))
                     {
                         SQLiteDataReader Lecteur = Commande.ExecuteReader();
+
+                        int NumeroLigne = 0;
+
+                        // On modifie le label pour indiquer que l'on exporte les articles dans le fichier
+                        this.LabelStatus.Text = "Ecriture dans le fichier en cours...";
 
                         // On écrit via le StreamWriter. On met "false" en paramètre pour écraser le fichier.
                         using (StreamWriter Sw = new StreamWriter(_CheminFichier, false, Encoding.Default))
@@ -118,9 +126,15 @@ namespace Hector
                                     Lecteur["Nom_Famille"] + ";" + 
                                     Lecteur["Nom_SousFamille"] + ";" +
                                     Lecteur["Prix_Article"].ToString().Replace('.', ','));
+                                
+                                NumeroLigne++;
+
+                                this.BarreDeProgression.Value = (int)((NumeroLigne / (float)NombreLignes) * 100);
                             }
                         }
                     }
+                    // On modifie le label pour indiquer que l'on a fini d'exporter les articles de la BDD
+                    this.LabelStatus.Text = "Exportation terminée";
                 }
             }
         }
