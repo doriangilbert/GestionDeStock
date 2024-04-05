@@ -58,7 +58,7 @@ namespace Hector
                 FichierChoisi.Text = Path.GetFileName(FilePath);
 
                 // On modifie le label pour indiquer qu'un fichier a bien été choisi et qu'il est prêt à être lu
-                this.label1.Text = "Prêt pour l'importation...";
+                this.LabelStatus.Text = "Prêt pour l'importation...";
             }
         }
 
@@ -110,7 +110,7 @@ namespace Hector
                     Connexion.Open();
 
                     // On modifie le label pour indiquer que l'on supprime les données de la BDD
-                    this.label1.Text = "Suppression des données";
+                    this.LabelStatus.Text = "Suppression des données";
 
                     // On prend toutes les tables du fichier.
                     string Requete = "SELECT name FROM sqlite_master WHERE type='table';";
@@ -136,7 +136,7 @@ namespace Hector
 
 
                     // On modifie le label pour indiquer que l'on parse le fichier
-                    this.label1.Text = "Lecture du fichier en cours...";
+                    this.LabelStatus.Text = "Lecture du fichier en cours...";
 
                     // On parse les données et on les insère dans un tableau.
                     // On enregistre aussi le nombre d'erreurs total lors du parsage du fichier
@@ -151,10 +151,10 @@ namespace Hector
                     string RequeteAjoutArticle = "";
 
                     // On parcourt le tableau des données
-                    for (int IndiceArticle = 1; IndiceArticle < Tableau.Count; IndiceArticle++)
+                    for (int IndiceArticle = 0; IndiceArticle < Tableau.Count; IndiceArticle++)
                     {
                         // On modifie le label pour indiquer que l'on ajoute les articles dans la BDD
-                        this.label1.Text = "Ajout des articles en cours...";
+                        this.LabelStatus.Text = "Ajout des articles en cours...";
 
                         AjouterCategories(Connexion, Tableau, IndiceArticle);
 
@@ -185,7 +185,7 @@ namespace Hector
                         }
 
                         // On fait avancer la barre de progression
-                        this.BarreDeProgression.Value = 50 + (int)(((NombreErreurs + IndiceArticle + 1) / (float)NombreLignes) * 50);
+                        this.BarreDeProgression.Value = 50 + (int)(((NombreErreurs + IndiceArticle + 2) / (float)NombreLignes) * 50);
                     }
 
                     // On supprime le tableau alloué dynamiquement
@@ -193,7 +193,7 @@ namespace Hector
                     Tableau = null;
 
                     // On modifie le label pour indiquer que l'on a fini l'ajout
-                    this.label1.Text = "Terminé";
+                    this.LabelStatus.Text = "Terminé";
 
                     // On affiche le résultat via un MessageBox
                     string Message = "Parmis les " + (NombreLignes - 1) + " lignes à lire dans le fichier, " +
@@ -230,7 +230,7 @@ namespace Hector
                     Connexion.Open();
 
                     // On modifie le label pour indiquer que l'on parse le fichier
-                    this.label1.Text = "Lecture du fichier en cours...";
+                    this.LabelStatus.Text = "Lecture du fichier en cours...";
 
                     // On parse les données et on les insère dans un tableau.
                     // On enregistre aussi le nombre d'erreurs total lors du parsage du fichier
@@ -248,10 +248,10 @@ namespace Hector
                     int NombreUpdate = 0;
 
                     // On parcourt le tableau des données
-                    for (int IndiceArticle = 1; IndiceArticle < Tableau.Count; IndiceArticle++)
+                    for (int IndiceArticle = 0; IndiceArticle < Tableau.Count; IndiceArticle++)
                     {
                         // On modifie le label pour indiquer que l'on ajoute les articles dans la BDD
-                        this.label1.Text = "Ajout des articles en cours...";
+                        this.LabelStatus.Text = "Ajout des articles en cours...";
 
                         AjouterCategories(Connexion, Tableau, IndiceArticle);
 
@@ -301,7 +301,7 @@ namespace Hector
                         }
 
                         // On fait avancer la barre de progression
-                        this.BarreDeProgression.Value = 50 + (int)(((NombreErreurs + IndiceArticle + 1) / (float)NombreLignes) * 50);
+                        this.BarreDeProgression.Value = 50 + (int)(((NombreErreurs + IndiceArticle + 2) / (float)NombreLignes) * 50);
                     }
 
                     // On supprime le tableau alloué dynamiquement
@@ -309,7 +309,7 @@ namespace Hector
                     Tableau = null;
 
                     // On modifie le label pour indiquer que l'on a fini l'ajout
-                    this.label1.Text = "Terminé";
+                    this.LabelStatus.Text = "Terminé";
 
                     // On affiche le résultat via un MessageBox
                     string Message = "Parmis les " + (NombreLignes - 1) + " lignes à lire dans le fichier, " +
@@ -337,34 +337,13 @@ namespace Hector
             // On lance la lecture du fichier
             using (StreamReader Sr = new StreamReader(_CheminFichier, Encoding.Default))
             {
-                // On veut connaitre le nombre de tables de la BDD
-                int NombreColonnes = 0;
+                // On veut indique le nombre de colonnes que les lignes doivent avoir.
+                int NombreColonnes = 6;
 
-                // On ne regarde que la première ligne pour l'instant
+                // On saute la première ligne (contenant les noms des tables)
                 if (!Sr.EndOfStream)
                 {
                     string Ligne1 = Sr.ReadLine();
-
-                    // On supprime les espaces en trop après les ";"
-                    while (Ligne1.Contains("; "))
-                    {
-                        Ligne1 = Ligne1.Replace("; ", ";");
-                    }
-                    // On supprime les espaces en trop avant les ";"
-                    while (Ligne1.Contains(" ;"))
-                    {
-                        Ligne1 = Ligne1.Replace(" ;", ";");
-                    }
-
-                    // On sépare les colonnes via un tableau en omettant les espaces/cases vides.
-                    char[] Separateur = { ';' };
-                    string[] Mots1 = Ligne1.Split(Separateur, StringSplitOptions.RemoveEmptyEntries);
-
-                    // On garde le nombre de colonnes du tableau de côté
-                    // (pour éviter les erreurs type "pas assez de données" ou "trop de données dans cette ligne")
-                    NombreColonnes = Mots1.Length;
-
-                    Tableau.Add(Mots1);
                 }
 
                 int NumeroLigne = 1;
@@ -387,6 +366,9 @@ namespace Hector
                     // On sépare les colonnes via un tableau en omettant les espaces / cases vides.
                     char[] Separateur = { ';' };
                     string[] Mots = Ligne.Split(Separateur, StringSplitOptions.RemoveEmptyEntries);
+
+                    // Pour que la BDD accepte les float
+                    Mots[5] = Mots[5].Replace(',', '.');
 
                     // On regarde si il y a bien le bon nombre d'informations / de colonnes.
                     if (Mots.Length == NombreColonnes)
