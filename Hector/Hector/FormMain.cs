@@ -65,7 +65,7 @@ namespace Hector
             this.Size = Settings.Default.Taille;
 
             // Suppression des noeuds de l'arbre
-            foreach (TreeNode Noeud in TreeView1.Nodes)
+            foreach (TreeNode Noeud in treeView1.Nodes)
             {
                 Noeud.Nodes.Clear();
             }
@@ -92,9 +92,9 @@ namespace Hector
                     while (LecteurFamilles.Read())
                     {
                         // Ajout de la famille dans l'arbre
-                        TreeView1.BeginUpdate();
-                        TreeView1.Nodes[1].Nodes.Add(LecteurFamilles["Nom"].ToString());
-                        TreeView1.EndUpdate();
+                        treeView1.BeginUpdate();
+                        treeView1.Nodes[1].Nodes.Add(LecteurFamilles["Nom"].ToString());
+                        treeView1.EndUpdate();
                         
                         // Création de la requête SQL permettant d'obtenir la liste des sous-familles
                         string RequeteSelectSousFamilles = "SELECT * FROM SousFamilles WHERE RefFamille = @RefFamille";
@@ -112,9 +112,9 @@ namespace Hector
                             while (LecteurSousFamilles.Read())
                             {
                                 // Ajout de la sous-famille dans l'arbre
-                                TreeView1.BeginUpdate();
-                                TreeView1.Nodes[1].Nodes[IndiceNoeudFamille].Nodes.Add(LecteurSousFamilles["Nom"].ToString());
-                                TreeView1.EndUpdate();
+                                treeView1.BeginUpdate();
+                                treeView1.Nodes[1].Nodes[IndiceNoeudFamille].Nodes.Add(LecteurSousFamilles["Nom"].ToString());
+                                treeView1.EndUpdate();
                             }
                         }
 
@@ -136,14 +136,14 @@ namespace Hector
                     while (LecteurMarques.Read())
                     {
                         // Ajout de la marque dans l'arbre
-                        TreeView1.BeginUpdate();
-                        TreeView1.Nodes[2].Nodes.Add(LecteurMarques["Nom"].ToString());
-                        TreeView1.EndUpdate();
+                        treeView1.BeginUpdate();
+                        treeView1.Nodes[2].Nodes.Add(LecteurMarques["Nom"].ToString());
+                        treeView1.EndUpdate();
                     }
                 }
 
                 // Sélection du premier noeud de l'arbre
-                this.TreeView1_AfterSelect(Sender, new TreeViewEventArgs(TreeView1.Nodes[0]));
+                this.treeView1_AfterSelect(Sender, new TreeViewEventArgs(treeView1.Nodes[0]));
             }
 
             // Réinitialisation de la barre de statut
@@ -324,37 +324,37 @@ namespace Hector
         /// </summary>
         /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
         /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
-        private void TreeView1_AfterSelect(object Sender, TreeViewEventArgs Args)
+        private void treeView1_AfterSelect(object Sender, TreeViewEventArgs Args)
         {
             // Réinitialisation du tri de la liste
-            ListView1.ListViewItemSorter = new ListViewItemComparer();
+            listView1.ListViewItemSorter = new ListViewItemComparer();
 
             // Réinitialisation des groupes
-            ListView1.Groups.Clear();
+            listView1.Groups.Clear();
 
             // Si le noeud sélectionné est "Tous les articles"
             if (Args.Node.Text == "Tous les articles")
             {
                 // Réinitialisation de la liste
-                ListView1.Columns.Clear();
-                ListView1.Items.Clear();
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
 
                 // Ajout des colonnes
-                ListView1.Columns.Add("RefArticle");
-                ListView1.Columns.Add("Description");
-                ListView1.Columns.Add("Familles");
-                ListView1.Columns.Add("Sous-familles");
-                ListView1.Columns.Add("Marques");
-                ListView1.Columns.Add("Prix");
-                ListView1.Columns.Add("Quantité");
+                listView1.Columns.Add("RefArticle");
+                listView1.Columns.Add("Description");
+                listView1.Columns.Add("Familles");
+                listView1.Columns.Add("Sous-familles");
+                listView1.Columns.Add("Marques");
+                listView1.Columns.Add("Prix");
+                listView1.Columns.Add("Quantité");
 
                 // Redimensionnement auutomatique des colonnes
-                ListView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
                 // Redimensionnement des colonnes pour qu'elles prennent toute la largeur de la vue
-                foreach(ColumnHeader EnTeteColonne in ListView1.Columns)
+                foreach(ColumnHeader EnTeteColonne in listView1.Columns)
                 {
-                    EnTeteColonne.Width = ListView1.Width / ListView1.Columns.Count;
+                    EnTeteColonne.Width = listView1.Width / listView1.Columns.Count;
                 }
 
                 // Création de la connexion à la base de données
@@ -380,7 +380,7 @@ namespace Hector
                         {
                             // Ajout de l'article dans la liste
                             ListViewItem ItemListe = new ListViewItem(new string[] { Lecteur["RefArticle"].ToString(), Lecteur["Description"].ToString(), Lecteur["NomFamille"].ToString(), Lecteur["NomSousFamille"].ToString(), Lecteur["NomMarque"].ToString(), Lecteur["PrixHT"].ToString(), Lecteur["Quantite"].ToString() });
-                            ListView1.Items.Add(ItemListe);
+                            listView1.Items.Add(ItemListe);
                         }
                     }
                 }
@@ -389,19 +389,19 @@ namespace Hector
             else if (Args.Node.Text == "Familles")
             {
                 // Réinitialisation de la liste
-                ListView1.Columns.Clear();
-                ListView1.Items.Clear();
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
 
                 // Ajout de la colonne
-                ListView1.Columns.Add("Description");
+                listView1.Columns.Add("Description");
 
                 // Redimensionnement automatique des colonnes
-                ListView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
                 // Redimensionnement des colonnes pour qu'elles prennent toute la largeur de la vue
-                foreach (ColumnHeader EnTeteColonne in ListView1.Columns)
+                foreach (ColumnHeader EnTeteColonne in listView1.Columns)
                 {
-                    EnTeteColonne.Width = ListView1.Width / ListView1.Columns.Count;
+                    EnTeteColonne.Width = listView1.Width / listView1.Columns.Count;
                 }
 
                 // Création de la connexion à la base de données
@@ -424,7 +424,7 @@ namespace Hector
                         {
                             // Ajout de la famille dans la liste
                             ListViewItem ItemListe = new ListViewItem(new string[] { Lecteur["Nom"].ToString() });
-                            ListView1.Items.Add(ItemListe);
+                            listView1.Items.Add(ItemListe);
                         }
                     }
                 }
@@ -433,19 +433,19 @@ namespace Hector
             else if (Args.Node.Text == "Marques")
             {
                 // Réinitialisation de la liste
-                ListView1.Columns.Clear();
-                ListView1.Items.Clear();
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
 
                 // Ajout de la colonne
-                ListView1.Columns.Add("Description");
+                listView1.Columns.Add("Description");
 
                 // Redimensionnement automatique des colonnes
-                ListView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
                 // Redimensionnement des colonnes pour qu'elles prennent toute la largeur de la vue
-                foreach (ColumnHeader EnTeteColonne in ListView1.Columns)
+                foreach (ColumnHeader EnTeteColonne in listView1.Columns)
                 {
-                    EnTeteColonne.Width = ListView1.Width / ListView1.Columns.Count;
+                    EnTeteColonne.Width = listView1.Width / listView1.Columns.Count;
                 }
 
                 // Création de la connexion à la base de données
@@ -468,7 +468,7 @@ namespace Hector
                         {
                             // Ajout de la marque dans la liste
                             ListViewItem ItemListe = new ListViewItem(new string[] { Lecteur["Nom"].ToString() });
-                            ListView1.Items.Add(ItemListe);
+                            listView1.Items.Add(ItemListe);
                         }
                     }
                 }
@@ -477,19 +477,19 @@ namespace Hector
             else if (Args.Node.Parent.Text == "Familles")
             {
                 // Réinitialisation de la liste
-                ListView1.Columns.Clear();
-                ListView1.Items.Clear();
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
 
                 // Ajout de la colonne
-                ListView1.Columns.Add("Description");
+                listView1.Columns.Add("Description");
 
                 // Redimensionnement automatique des colonnes
-                ListView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
                 // Redimensionnement des colonnes pour qu'elles prennent toute la largeur de la vue
-                foreach (ColumnHeader EnTeteColonne in ListView1.Columns)
+                foreach (ColumnHeader EnTeteColonne in listView1.Columns)
                 {
-                    EnTeteColonne.Width = ListView1.Width / ListView1.Columns.Count;
+                    EnTeteColonne.Width = listView1.Width / listView1.Columns.Count;
                 }
 
                 // Création de la connexion à la base de données
@@ -512,7 +512,7 @@ namespace Hector
                         {
                             // Ajout de la sous-famille dans la liste
                             ListViewItem ItemListe = new ListViewItem(new string[] { Lecteur["Nom"].ToString() });
-                            ListView1.Items.Add(ItemListe);
+                            listView1.Items.Add(ItemListe);
                         }
                     }
                 }
@@ -521,25 +521,25 @@ namespace Hector
             else if (Args.Node.Parent.Parent != null && Args.Node.Parent.Parent.Text == "Familles")
             {
                 // Réinitialisation de la liste
-                ListView1.Columns.Clear();
-                ListView1.Items.Clear();
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
 
                 // Ajout des colonnes
-                ListView1.Columns.Add("RefArticle");
-                ListView1.Columns.Add("Description");
-                ListView1.Columns.Add("Familles");
-                ListView1.Columns.Add("Sous-familles");
-                ListView1.Columns.Add("Marques");
-                ListView1.Columns.Add("Prix");
-                ListView1.Columns.Add("Quantité");
+                listView1.Columns.Add("RefArticle");
+                listView1.Columns.Add("Description");
+                listView1.Columns.Add("Familles");
+                listView1.Columns.Add("Sous-familles");
+                listView1.Columns.Add("Marques");
+                listView1.Columns.Add("Prix");
+                listView1.Columns.Add("Quantité");
 
                 // Redimensionnement automatique des colonnes
-                ListView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
                 // Redimensionnement des colonnes pour qu'elles prennent toute la largeur de la vue
-                foreach (ColumnHeader EnTeteColonne in ListView1.Columns)
+                foreach (ColumnHeader EnTeteColonne in listView1.Columns)
                 {
-                    EnTeteColonne.Width = ListView1.Width / ListView1.Columns.Count;
+                    EnTeteColonne.Width = listView1.Width / listView1.Columns.Count;
                 }
 
                 // Création de la connexion à la base de données
@@ -567,7 +567,7 @@ namespace Hector
                         {
                             // Ajout de l'article dans la liste
                             ListViewItem ItemListe = new ListViewItem(new string[] { Lecteur["RefArticle"].ToString(), Lecteur["Description"].ToString(), Lecteur["NomFamille"].ToString(), Lecteur["NomSousFamille"].ToString(), Lecteur["NomMarque"].ToString(), Lecteur["PrixHT"].ToString(), Lecteur["Quantite"].ToString() });
-                            ListView1.Items.Add(ItemListe);
+                            listView1.Items.Add(ItemListe);
                         }
                     }
                 }
@@ -576,25 +576,25 @@ namespace Hector
             else if (Args.Node.Parent.Text == "Marques")
             {
                 // Réinitialisation de la liste
-                ListView1.Columns.Clear();
-                ListView1.Items.Clear();
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
 
                 // Ajout des colonnes
-                ListView1.Columns.Add("RefArticle");
-                ListView1.Columns.Add("Description");
-                ListView1.Columns.Add("Familles");
-                ListView1.Columns.Add("Sous-familles");
-                ListView1.Columns.Add("Marques");
-                ListView1.Columns.Add("Prix");
-                ListView1.Columns.Add("Quantité");
+                listView1.Columns.Add("RefArticle");
+                listView1.Columns.Add("Description");
+                listView1.Columns.Add("Familles");
+                listView1.Columns.Add("Sous-familles");
+                listView1.Columns.Add("Marques");
+                listView1.Columns.Add("Prix");
+                listView1.Columns.Add("Quantité");
 
                 // Redimensionnement automatique des colonnes
-                ListView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 
                 // Redimensionnement des colonnes pour qu'elles prennent toute la largeur de la vue
-                foreach (ColumnHeader EnTeteColonne in ListView1.Columns)
+                foreach (ColumnHeader EnTeteColonne in listView1.Columns)
                 {
-                    EnTeteColonne.Width = ListView1.Width / ListView1.Columns.Count;
+                    EnTeteColonne.Width = listView1.Width / listView1.Columns.Count;
                 }
 
                 // Création de la connexion à la base de données
@@ -621,7 +621,7 @@ namespace Hector
                         {
                             // Ajout de l'article dans la liste
                             ListViewItem ItemListe = new ListViewItem(new string[] { Lecteur["RefArticle"].ToString(), Lecteur["Description"].ToString(), Lecteur["NomFamille"].ToString(), Lecteur["NomSousFamille"].ToString(), Lecteur["NomMarque"].ToString(), Lecteur["PrixHT"].ToString(), Lecteur["Quantite"].ToString() });
-                            ListView1.Items.Add(ItemListe);
+                            listView1.Items.Add(ItemListe);
                         }
                     }
                 }
@@ -629,8 +629,8 @@ namespace Hector
             else
             {
                 // Réinitialisation de la liste
-                ListView1.Columns.Clear();
-                ListView1.Items.Clear();
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
             }
         }
 
@@ -639,28 +639,28 @@ namespace Hector
         /// </summary>
         /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
         /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
-        private void ListView1_ColumnClick(object Sender, ColumnClickEventArgs Args)
+        private void listView1_ColumnClick(object Sender, ColumnClickEventArgs Args)
         {
             // Tri des éléments de la liste en fonction de la colonne sélectionnée
-            ListView1.ListViewItemSorter = new ListViewItemComparer(Args.Column);
+            listView1.ListViewItemSorter = new ListViewItemComparer(Args.Column);
 
             // Récupération du nom de la colonne sélectionnée
-            string NomColonne = ListView1.Columns[Args.Column].Text;
+            string NomColonne = listView1.Columns[Args.Column].Text;
 
             // Réinitialisation des groupes
-            ListView1.Groups.Clear();
+            listView1.Groups.Clear();
 
             // Si la colonne sélectionnée correspond à la colonne "Familles", "Sous-familles" ou "Marques"
             if (NomColonne == "Familles" || NomColonne == "Sous-familles" || NomColonne == "Marques")
             {
                 // Parcours des éléments de la liste
-                foreach (ListViewItem Item in ListView1.Items)
+                foreach (ListViewItem Item in listView1.Items)
                 {
                     // Booléen permettant de savoir si le groupe existe
                     bool GroupeExiste = false;
 
                     // Pour chaque groupe de la liste
-                    foreach (ListViewGroup Groupe in ListView1.Groups)
+                    foreach (ListViewGroup Groupe in listView1.Groups)
                     {
                         // Si le groupe existe
                         if (Item.SubItems[Args.Column].Text == Groupe.Header)
@@ -672,10 +672,10 @@ namespace Hector
                     if (!GroupeExiste)
                     {
                         // Ajout du groupe
-                        ListView1.Groups.Add(new ListViewGroup(Item.SubItems[Args.Column].Text, HorizontalAlignment.Left));
+                        listView1.Groups.Add(new ListViewGroup(Item.SubItems[Args.Column].Text, HorizontalAlignment.Left));
                     }
                     // Pour chaque groupe de la liste
-                    foreach (ListViewGroup Groupe in ListView1.Groups)
+                    foreach (ListViewGroup Groupe in listView1.Groups)
                     {
                         // Si le texte dans la colonne pour l'élément correspond au nom du groupe
                         if (Item.SubItems[Args.Column].Text == Groupe.Header)
@@ -690,13 +690,13 @@ namespace Hector
             else if (NomColonne == "Description")
             {
                 // Parcours des éléments de la liste
-                foreach (ListViewItem Item in ListView1.Items)
+                foreach (ListViewItem Item in listView1.Items)
                 {
                     // Booléen permettant de savoir si le groupe existe
                     bool GroupeExiste = false;
 
                     // Pour chaque groupe de la liste
-                    foreach (ListViewGroup Groupe in ListView1.Groups)
+                    foreach (ListViewGroup Groupe in listView1.Groups)
                     {
                         // Si le groupe correspondant à la première lettre de la description existe
                         if (Item.SubItems[Args.Column].Text.StartsWith(Groupe.Header))
@@ -708,10 +708,10 @@ namespace Hector
                     if (!GroupeExiste)
                     {
                         // Ajout du groupe nommé selon la première lettre de la description
-                        ListView1.Groups.Add(new ListViewGroup(Item.SubItems[Args.Column].Text.Substring(0,1), HorizontalAlignment.Left));
+                        listView1.Groups.Add(new ListViewGroup(Item.SubItems[Args.Column].Text.Substring(0,1), HorizontalAlignment.Left));
                     }
                     // Pour chaque groupe de la liste
-                    foreach (ListViewGroup Groupe in ListView1.Groups)
+                    foreach (ListViewGroup Groupe in listView1.Groups)
                     {
                         // Si le texte dans la colonne pour l'élément commence par le nom du groupe
                         if (Item.SubItems[Args.Column].Text.StartsWith(Groupe.Header))
@@ -729,7 +729,7 @@ namespace Hector
         /// </summary>
         /// <param name="Sender">Objet <b>Object</b> prend en charge les éventuels objets que l'on renseigne en paramètre.</param>
         /// <param name="Args">Objet <b>EventArgs</b> contient les informations sur l'évènement.</param>
-        private void ListView1_KeyDown(object Sender, KeyEventArgs Args)
+        private void listView1_KeyDown(object Sender, KeyEventArgs Args)
         {
             // Si la touche F5 est appuyée
             if (Args.KeyCode == Keys.F5)
@@ -738,6 +738,14 @@ namespace Hector
                 this.FormMain_Load(Sender, Args);
             }
             
+        }
+
+        private void listView1_MouseDown(object Sender, MouseEventArgs Args)
+        {
+            if (Args.Button == MouseButtons.Right)
+            {
+                contextMenuStrip1.Show(Cursor.Position);
+            }
         }
 
 

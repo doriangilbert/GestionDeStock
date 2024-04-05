@@ -29,6 +29,7 @@ namespace Hector
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Tous les articles");
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Familles");
             System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Marques");
@@ -39,13 +40,18 @@ namespace Hector
             this.exporterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.TreeView1 = new System.Windows.Forms.TreeView();
-            this.ListView1 = new System.Windows.Forms.ListView();
+            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ajouterUnÉlémentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.modifierLélémentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.supprimerLélémentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -111,13 +117,13 @@ namespace Hector
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.BackColor = System.Drawing.SystemColors.Control;
-            this.splitContainer1.Panel1.Controls.Add(this.TreeView1);
+            this.splitContainer1.Panel1.Controls.Add(this.treeView1);
             this.splitContainer1.Panel1MinSize = 200;
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.BackColor = System.Drawing.SystemColors.Control;
-            this.splitContainer1.Panel2.Controls.Add(this.ListView1);
+            this.splitContainer1.Panel2.Controls.Add(this.listView1);
             this.splitContainer1.Size = new System.Drawing.Size(1185, 438);
             this.splitContainer1.SplitterDistance = 333;
             this.splitContainer1.SplitterWidth = 3;
@@ -125,38 +131,66 @@ namespace Hector
             // 
             // TreeView1
             // 
-            this.TreeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TreeView1.Location = new System.Drawing.Point(0, 0);
-            this.TreeView1.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
-            this.TreeView1.Name = "TreeView1";
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(0, 0);
+            this.treeView1.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this.treeView1.Name = "TreeView1";
             treeNode1.Name = "Tous les articles";
             treeNode1.Text = "Tous les articles";
             treeNode2.Name = "Familles";
             treeNode2.Text = "Familles";
             treeNode3.Name = "Marques";
             treeNode3.Text = "Marques";
-            this.TreeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1,
             treeNode2,
             treeNode3});
-            this.TreeView1.Size = new System.Drawing.Size(333, 438);
-            this.TreeView1.TabIndex = 0;
-            this.TreeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeView1_AfterSelect);
+            this.treeView1.Size = new System.Drawing.Size(333, 438);
+            this.treeView1.TabIndex = 0;
+            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // ListView1
             // 
-            this.ListView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ListView1.FullRowSelect = true;
-            this.ListView1.HideSelection = false;
-            this.ListView1.Location = new System.Drawing.Point(0, 0);
-            this.ListView1.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
-            this.ListView1.Name = "ListView1";
-            this.ListView1.Size = new System.Drawing.Size(849, 438);
-            this.ListView1.TabIndex = 0;
-            this.ListView1.UseCompatibleStateImageBehavior = false;
-            this.ListView1.View = System.Windows.Forms.View.Details;
-            this.ListView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.ListView1_ColumnClick);
-            this.ListView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ListView1_KeyDown);
+            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView1.FullRowSelect = true;
+            this.listView1.HideSelection = false;
+            this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(1132, 549);
+            this.listView1.TabIndex = 0;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
+            this.listView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView1_KeyDown);
+            this.listView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseDown);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ajouterUnÉlémentToolStripMenuItem,
+            this.modifierLélémentToolStripMenuItem,
+            this.supprimerLélémentToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(182, 70);
+            // 
+            // ajouterUnÉlémentToolStripMenuItem
+            // 
+            this.ajouterUnÉlémentToolStripMenuItem.Name = "ajouterUnÉlémentToolStripMenuItem";
+            this.ajouterUnÉlémentToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.ajouterUnÉlémentToolStripMenuItem.Text = "Ajouter un élément";
+            // 
+            // modifierLélémentToolStripMenuItem
+            // 
+            this.modifierLélémentToolStripMenuItem.Name = "modifierLélémentToolStripMenuItem";
+            this.modifierLélémentToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.modifierLélémentToolStripMenuItem.Text = "Modifier l\'élément";
+            // 
+            // supprimerLélémentToolStripMenuItem
+            // 
+            this.supprimerLélémentToolStripMenuItem.Name = "supprimerLélémentToolStripMenuItem";
+            this.supprimerLélémentToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.supprimerLélémentToolStripMenuItem.Text = "Supprimer l\'élément";
             // 
             // FormMain
             // 
@@ -178,6 +212,7 @@ namespace Hector
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -192,8 +227,12 @@ namespace Hector
         private System.Windows.Forms.ToolStripMenuItem exporterToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.TreeView TreeView1;
-        private System.Windows.Forms.ListView ListView1;
+        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem ajouterUnÉlémentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem modifierLélémentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem supprimerLélémentToolStripMenuItem;
     }
 }
 
