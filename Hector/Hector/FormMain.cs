@@ -113,6 +113,8 @@ namespace Hector
                 this.treeView1_AfterSelect(Sender, new TreeViewEventArgs(treeView1.Nodes[0]));
             }
 
+            statusStrip1.Items.Clear();
+
             // Création du label du nombre d'articles dans la barre de statut
             ToolStripStatusLabel StatusLabelNbArticles = new ToolStripStatusLabel();
 
@@ -142,6 +144,105 @@ namespace Hector
 
             // Ajout du label dans la barre de statut
             statusStrip1.Items.Add(StatusLabelNbArticles);
+
+            // Ajout d'un séparateur dans la barre de statut
+            statusStrip1.Items.Add(new ToolStripSeparator());
+
+            // Création du label du nombre de familles dans la barre de statut
+            ToolStripStatusLabel StatusLabelNbFamilles = new ToolStripStatusLabel();
+
+            // Création de la connexion à la base de données
+            using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+            {
+                // Ouverture de la connexion
+                Connexion.Open();
+
+                // Création de la requête SQL permettant d'obtenir le nombre de familles
+                string Requete = "SELECT COUNT(*) AS NbFamilles FROM Familles";
+
+                // Création de la commande SQL
+                using (SQLiteCommand Commande = new SQLiteCommand(Requete, Connexion))
+                {
+                    // Création du lecteur
+                    SQLiteDataReader Lecteur = Commande.ExecuteReader();
+
+                    // Lecture du resultat de la requête
+                    while (Lecteur.Read())
+                    {
+                        // Ajout du nombre de familles dans le label
+                        StatusLabelNbFamilles.Text = Lecteur["NbFamilles"].ToString() + " Familles";
+                    }
+                }
+            }
+
+            // Ajout du label dans la barre de statut
+            statusStrip1.Items.Add(StatusLabelNbFamilles);
+
+            // Ajout d'un séparateur dans la barre de statut
+            statusStrip1.Items.Add(new ToolStripSeparator());
+
+            // Création du label du nombre de sous-familles dans la barre de statut
+            ToolStripStatusLabel StatusLabelNbSousFamilles = new ToolStripStatusLabel();
+
+            // Création de la connexion à la base de données
+            using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+            {
+                // Ouverture de la connexion
+                Connexion.Open();
+
+                // Création de la requête SQL permettant d'obtenir le nombre de sous-familles
+                string Requete = "SELECT COUNT(*) AS NbSousFamilles FROM SousFamilles";
+
+                // Création de la commande SQL
+                using (SQLiteCommand Commande = new SQLiteCommand(Requete, Connexion))
+                {
+                    // Création du lecteur
+                    SQLiteDataReader Lecteur = Commande.ExecuteReader();
+
+                    // Lecture du resultat de la requête
+                    while (Lecteur.Read())
+                    {
+                        // Ajout du nombre de sous-familles dans le label
+                        StatusLabelNbSousFamilles.Text = Lecteur["NbSousFamilles"].ToString() + " Sous-Familles";
+                    }
+                }
+            }
+
+            // Ajout du label dans la barre de statut
+            statusStrip1.Items.Add(StatusLabelNbSousFamilles);
+
+            // Ajout d'un séparateur dans la barre de statut
+            statusStrip1.Items.Add(new ToolStripSeparator());
+
+            // Création du label du nombre de marques dans la barre de statut
+            ToolStripStatusLabel StatusLabelNbMarques = new ToolStripStatusLabel();
+
+            // Création de la connexion à la base de données
+            using (SQLiteConnection Connexion = new SQLiteConnection("Data Source=Hector.SQLite"))
+            {
+                // Ouverture de la connexion
+                Connexion.Open();
+
+                // Création de la requête SQL permettant d'obtenir le nombre de marques
+                string Requete = "SELECT COUNT(*) AS NbMarques FROM Marques";
+
+                // Création de la commande SQL
+                using (SQLiteCommand Commande = new SQLiteCommand(Requete, Connexion))
+                {
+                    // Création du lecteur
+                    SQLiteDataReader Lecteur = Commande.ExecuteReader();
+
+                    // Lecture du resultat de la requête
+                    while (Lecteur.Read())
+                    {
+                        // Ajout du nombre de marques dans le label
+                        StatusLabelNbMarques.Text = Lecteur["NbMarques"].ToString() + " Marques";
+                    }
+                }
+            }
+
+            // Ajout du label dans la barre de statut
+            statusStrip1.Items.Add(StatusLabelNbMarques);
         }
 
 
