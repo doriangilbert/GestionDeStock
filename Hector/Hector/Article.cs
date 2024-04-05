@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace Hector
 {
+    /// <summary>
+    /// Classe représentant un article
+    /// </summary>
     class Article
     {
+        // Attributs
         private string _RefArticle;
         private string _Description;
         private SousFamille _SousFamilleArticle;
@@ -15,6 +19,15 @@ namespace Hector
         private float _PrixHT;
         private int _Quantite;
 
+        /// <summary>
+        /// Constructeur de la classe Article
+        /// </summary>
+        /// <param name="RefArticle"></param>
+        /// <param name="Description"></param>
+        /// <param name="SousFamilleArticle"></param>
+        /// <param name="MarqueArticle"></param>
+        /// <param name="PrixHT"></param>
+        /// <param name="Quantite"></param>
         public Article(string RefArticle, string Description, SousFamille SousFamilleArticle, Marque MarqueArticle, float PrixHT, int Quantite)
         {
             this.RefArticle = RefArticle;
@@ -25,6 +38,7 @@ namespace Hector
             this.Quantite = Quantite;
         }
 
+        // Getters et Setters
         public string RefArticle { get => _RefArticle; set => _RefArticle = value; }
         public string Description { get => _Description; set => _Description = value; }
         public float PrixHT { get => _PrixHT; set => _PrixHT = value; }
